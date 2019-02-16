@@ -9,7 +9,10 @@ Find your project and click on it or create new one. Then go to project settings
 you see there to obtain this file. When you have config file move it to `app` folder in your application
 module.
 
+## Google Map key
+To make Google Map work you have to obtain API key from Google and 
+insert it into gradle.properties file in `~/.gradle` directory like:
+```
+QuickTravel_MapKey="Your_key"
+```
 
-### Generating Firebase Admin SDK file
-To generate Admin SDK config file go to: `https://console.firebase.google.com/u/0/project/_/settings/serviceaccounts/adminsdk`
-and click on your project. Then generate this file with instructions from Google.
