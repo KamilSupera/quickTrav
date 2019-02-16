@@ -22,6 +22,10 @@ android {
             resValue 'string', "map_client_key", QuickTravel_MapKey
         }
     }
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
 }
 
 dependencies {
