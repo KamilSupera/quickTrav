@@ -34,6 +34,8 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".activities.GoogleSignInActivity"/>
+
         <activity
             android:name=".activities.MainActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
