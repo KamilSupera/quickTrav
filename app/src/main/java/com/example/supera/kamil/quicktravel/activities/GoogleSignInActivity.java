@@ -26,8 +26,6 @@ public class GoogleSignInActivity extends AppCompatActivity {
             .build();
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
-        signIn(mGoogleSignInClient);
     }
 
     @Override
@@ -65,8 +63,9 @@ public class GoogleSignInActivity extends AppCompatActivity {
         }
     }
 
-    private void signIn(GoogleSignInClient mGoogleSignInClient) {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
+    public void signIn() {
+        System.out.println("SIGNIN");
+        //Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        //startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 }

@@ -8,11 +8,14 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.example.supera.kamil.quicktravel.R;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
     private DrawerLayout drawer;
 
     @Override
@@ -33,13 +36,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             R.string.nav_drawer_open, R.string.nav_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
+        findViewById(R.id.sign_in_button).setOnClickListener(this);
+
     }
 
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.sign_in_button:
+                GoogleSignInActivity googleSignInActivity = new GoogleSignInActivity();
+                googleSignInActivity.signIn();
+                break;
+        }
+        drawer.closeDrawer(GravityCompat.START);
     }
 
     //Close nav drawer when open. Protect for closed app when drawer nav open.
