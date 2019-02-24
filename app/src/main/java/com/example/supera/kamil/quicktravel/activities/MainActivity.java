@@ -15,8 +15,8 @@ import android.view.View;
 import com.example.supera.kamil.quicktravel.R;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
-    private DrawerLayout drawer;
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+    public DrawerLayout drawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +37,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        findViewById(R.id.sign_in_button).setOnClickListener(this);
-
     }
 
     @Override
@@ -47,17 +45,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.sign_in_button:
-                GoogleSignInActivity googleSignInActivity = new GoogleSignInActivity();
-                googleSignInActivity.signIn();
-                break;
-        }
-        drawer.closeDrawer(GravityCompat.START);
-    }
-
-    //Close nav drawer when open. Protect for closed app when drawer nav open.
+    /**
+     * Close nav drawer when open. Protect for closed app when drawer nav open.
+     */
     @Override
     public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
