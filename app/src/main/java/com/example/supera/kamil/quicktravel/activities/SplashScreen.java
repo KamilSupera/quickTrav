@@ -12,7 +12,7 @@ public class SplashScreen extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        startActivity(new Intent(SplashScreen.this, GoogleSignInActivity.class));
+        startActivity(new Intent(SplashScreen.this, MainActivity.class));
 
         finish();
     }
