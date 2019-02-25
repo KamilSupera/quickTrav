@@ -36,7 +36,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             R.string.nav_drawer_open, R.string.nav_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
     }
 
     @Override
