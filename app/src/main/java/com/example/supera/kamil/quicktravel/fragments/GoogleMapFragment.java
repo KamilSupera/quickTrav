@@ -1,5 +1,6 @@
 package com.example.supera.kamil.quicktravel.fragments;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -8,10 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.supera.kamil.quicktravel.R;
+import com.example.supera.kamil.quicktravel.models.Stop;
+import com.example.supera.kamil.quicktravel.viewmodels.MapViewModel;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.List;
 import java.util.Objects;
 
 public class GoogleMapFragment extends Fragment {
@@ -21,6 +26,9 @@ public class GoogleMapFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.map_fragment, container, false);
+
+        MapViewModel model = ViewModelProviders.of(Objects.requireNonNull(getActivity()))
+            .get(MapViewModel.class);
 
         mMapView = rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
@@ -37,6 +45,8 @@ public class GoogleMapFragment extends Fragment {
         // Map is ready to display.
         mMapView.getMapAsync(mMap -> {
             googleMap = mMap;
+
+            model.addStopsToMap(googleMap);
         });
 
         return rootView;
