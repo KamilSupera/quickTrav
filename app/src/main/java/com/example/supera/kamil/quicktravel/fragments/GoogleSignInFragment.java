@@ -2,11 +2,13 @@ package com.example.supera.kamil.quicktravel.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.supera.kamil.quicktravel.R;
@@ -16,14 +18,16 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+
+import java.util.concurrent.Executor;
 
 public class GoogleSignInFragment extends Fragment implements View.OnClickListener {
 
     private static final int RC_SIGN_IN = 9001;
     public GoogleSignInClient mGoogleSignInClient;
     View v;
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) { super.onCreate(savedInstanceState); }
@@ -48,6 +52,10 @@ public class GoogleSignInFragment extends Fragment implements View.OnClickListen
         v = inflater.inflate(R.layout.google_sign_in_fragment, container, false);
 
         v.findViewById(R.id.sign_in_button).setOnClickListener(this);
+        v.findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
+
+        v.findViewById(R.id.log_out_button).setOnClickListener(this);
+        v.findViewById(R.id.log_out_button).setVisibility(View.INVISIBLE);
 
         return v;
     }
@@ -57,9 +65,22 @@ public class GoogleSignInFragment extends Fragment implements View.OnClickListen
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
+    private void signOut() {
+        mGoogleSignInClient.signOut()
+            .addOnCompleteListener((Executor) this, new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    v.findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
+                    v.findViewById(R.id.log_out_button).setVisibility(View.INVISIBLE);
+                }
+            });
+    }
+
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+            v.findViewById(R.id.sign_in_button).setVisibility(View.INVISIBLE);
+            v.findViewById(R.id.log_out_button).setVisibility(View.VISIBLE);
 
 
         } catch (ApiException e) {
@@ -77,9 +98,7 @@ public class GoogleSignInFragment extends Fragment implements View.OnClickListen
         }
     }
 
-    /**
-     * TODO: create update ui.
-     */
+
     @Override
     public void onStart() {
         super.onStart();
@@ -87,6 +106,8 @@ public class GoogleSignInFragment extends Fragment implements View.OnClickListen
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getContext());
 
         if (account != null) {
+            v.findViewById(R.id.sign_in_button).setVisibility(View.INVISIBLE);
+            v.findViewById(R.id.log_out_button).setVisibility(View.VISIBLE);
         }
     }
 
@@ -95,6 +116,9 @@ public class GoogleSignInFragment extends Fragment implements View.OnClickListen
         switch (view.getId()) {
             case R.id.sign_in_button:
                 signIn();
+                break;
+            case R.id.log_out_button:
+                signOut();
                 break;
         }
     }
