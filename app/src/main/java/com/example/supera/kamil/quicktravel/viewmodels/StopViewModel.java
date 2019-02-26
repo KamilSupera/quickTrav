@@ -6,8 +6,10 @@ import android.arch.lifecycle.ViewModel;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
 
+import com.example.supera.kamil.quicktravel.firebase.repository.FirebaseRepository;
 import com.example.supera.kamil.quicktravel.models.Departure;
 import com.example.supera.kamil.quicktravel.models.Stop;
+import com.example.supera.kamil.quicktravel.repository.StopRepository;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -29,6 +31,7 @@ import static java.lang.Double.parseDouble;
  */
 public class StopViewModel extends ViewModel {
     private MutableLiveData<List<Stop>> stops;
+    private StopRepository repository = new StopRepository();
 
     public LiveData<List<Stop>> getStops() {
         if (stops == null) {
@@ -39,64 +42,25 @@ public class StopViewModel extends ViewModel {
         return stops;
     }
 
+    @Override
+    protected void onCleared() {
+        repository.deleteListener();
+    }
+
     /**
      * Loads all stops from database and sets MutableLiveData with loaded stops.
      */
     private void loadStops() {
-        List<Stop> stopsDb = new ArrayList<>();
-        // Initialize firebase db and get connection reference
-        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference ref = database.getReference("root/stops/");
-
-        // Load data
-        ref.addValueEventListener(new ValueEventListener() {
+        repository.addListener(new FirebaseRepository.FirebaseRepositoryCallback<Stop>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds: dataSnapshot.getChildren()) {
-                    Stop stop = new Stop();
-                    stop.setName(ds.getKey());
-
-                    Double longitude = null;
-                    Double latitude = null;
-
-                    // Get geo position of stop.
-                    for (DataSnapshot geoPoint : ds.child("geoPoint").getChildren()) {
-                        if (Objects.equals(geoPoint.getKey(), "_long")) {
-                            longitude = parseDouble(geoPoint.getValue().toString());
-                        } else {
-                            latitude = parseDouble(geoPoint.getValue().toString());
-                        }
-                    }
-
-                    stop.setPoint(new LatLng(latitude, longitude));
-                    List<Departure> departures = new ArrayList<>();
-
-                    // Load departures for specific stop.
-                    for (DataSnapshot departuresS : ds.child("departures").getChildren()) {
-                        Departure departure = new Departure();
-
-                        for (DataSnapshot type : departuresS.getChildren()) {
-                            departure.setType(type.getKey());
-
-                            for (DataSnapshot time : type.getChildren()) {
-                                departure.setTime(time.getValue().toString());
-                            }
-                        }
-
-                        departures.add(departure);
-                    }
-
-                    stop.setDepartures(departures);
-                    stopsDb.add(stop);
-                }
-
-                // Set MutableLiveData with stop list.
-                stops.setValue(stopsDb);
+            public void onSuccess(List<Stop> result) {
+                stops.setValue(result);
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
+            public void onError(Exception e) {
+                // TODO: FIND PROPER WAY TO INFORM USER ABOUT THIS EXCEPTION.
+                stops.setValue(null);
             }
         });
     }

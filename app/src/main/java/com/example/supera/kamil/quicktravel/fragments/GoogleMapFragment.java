@@ -18,7 +18,6 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.List;
 import java.util.Objects;
 
 public class GoogleMapFragment extends Fragment {
@@ -49,15 +48,13 @@ public class GoogleMapFragment extends Fragment {
             googleMap = mMap;
 
             // Update map when new stops are returned.
-            model.getStops().observe(this, new Observer<List<Stop>>() {
-                @Override
-                public void onChanged(@Nullable List<Stop> stops) {
-                    if (stops != null) {
-                        // Mark stops on map.
-                        stops.stream().map(stop -> googleMap
-                            .addMarker(new MarkerOptions()
-                                .position(stop.getPoint())
-                                .title(stop.getName())));
+            model.getStops().observe(this, stops -> {
+                if (stops != null) {
+                    // Mark stops on map.
+                    for (Stop stop : stops) {
+                        googleMap.addMarker(new MarkerOptions()
+                            .position(stop.getPoint())
+                            .title(stop.getName()));
                     }
                 }
             });
