@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 
 import com.example.supera.kamil.quicktravel.R;
 import com.example.supera.kamil.quicktravel.models.Stop;
-import com.example.supera.kamil.quicktravel.viewmodels.MapViewModel;
+import com.example.supera.kamil.quicktravel.viewmodels.StopViewModel;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
@@ -29,8 +29,8 @@ public class GoogleMapFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.map_fragment, container, false);
 
-        MapViewModel model = ViewModelProviders.of(Objects.requireNonNull(getActivity()))
-            .get(MapViewModel.class);
+        StopViewModel model = ViewModelProviders.of(Objects.requireNonNull(getActivity()))
+            .get(StopViewModel.class);
 
         mMapView = rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
@@ -48,10 +48,12 @@ public class GoogleMapFragment extends Fragment {
         mMapView.getMapAsync(mMap -> {
             googleMap = mMap;
 
+            // Update map when new stops are returned.
             model.getStops().observe(this, new Observer<List<Stop>>() {
                 @Override
                 public void onChanged(@Nullable List<Stop> stops) {
                     if (stops != null) {
+                        // Mark stops on map.
                         stops.stream().map(stop -> googleMap
                             .addMarker(new MarkerOptions()
                                 .position(stop.getPoint())

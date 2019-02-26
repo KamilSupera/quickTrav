@@ -52,6 +52,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        // TODO: ADD STOPS TO DRAWER
+
         //Rotate menu icon
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
             R.string.nav_drawer_open, R.string.nav_drawer_close);

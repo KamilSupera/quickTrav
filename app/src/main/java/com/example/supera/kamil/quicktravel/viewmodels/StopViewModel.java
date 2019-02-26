@@ -23,7 +23,11 @@ import java.util.Objects;
 
 import static java.lang.Double.parseDouble;
 
-public class MapViewModel extends ViewModel {
+/**
+ * Handle all data about stops. Used to store data between more than one
+ * activity/fragment which uses stops data.
+ */
+public class StopViewModel extends ViewModel {
     private MutableLiveData<List<Stop>> stops;
 
     public LiveData<List<Stop>> getStops() {
@@ -35,6 +39,9 @@ public class MapViewModel extends ViewModel {
         return stops;
     }
 
+    /**
+     * Loads all stops from database and sets MutableLiveData with loaded stops.
+     */
     private void loadStops() {
         List<Stop> stopsDb = new ArrayList<>();
         // Initialize firebase db and get connection reference
@@ -52,6 +59,7 @@ public class MapViewModel extends ViewModel {
                     Double longitude = null;
                     Double latitude = null;
 
+                    // Get geo position of stop.
                     for (DataSnapshot geoPoint : ds.child("geoPoint").getChildren()) {
                         if (Objects.equals(geoPoint.getKey(), "_long")) {
                             longitude = parseDouble(geoPoint.getValue().toString());
@@ -63,6 +71,7 @@ public class MapViewModel extends ViewModel {
                     stop.setPoint(new LatLng(latitude, longitude));
                     List<Departure> departures = new ArrayList<>();
 
+                    // Load departures for specific stop.
                     for (DataSnapshot departuresS : ds.child("departures").getChildren()) {
                         Departure departure = new Departure();
 
@@ -81,6 +90,7 @@ public class MapViewModel extends ViewModel {
                     stopsDb.add(stop);
                 }
 
+                // Set MutableLiveData with stop list.
                 stops.setValue(stopsDb);
             }
 
