@@ -1,5 +1,7 @@
 package com.example.supera.kamil.quicktravel.viewmodels;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
@@ -22,15 +24,19 @@ import java.util.Objects;
 import static java.lang.Double.parseDouble;
 
 public class MapViewModel extends ViewModel {
-    private List<Stop> stops;
+    private MutableLiveData<List<Stop>> stops;
 
-    public void addStopsToMap(GoogleMap googleMap) {
-        loadStops(googleMap);
+    public LiveData<List<Stop>> getStops() {
+        if (stops == null) {
+            stops = new MutableLiveData<>();
+            loadStops();
+        }
+
+        return stops;
     }
 
-    private void loadStops(GoogleMap googleMap) {
-        stops = new ArrayList<>();
-
+    private void loadStops() {
+        List<Stop> stopsDb = new ArrayList<>();
         // Initialize firebase db and get connection reference
         final FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference ref = database.getReference("root/stops/");
@@ -39,7 +45,6 @@ public class MapViewModel extends ViewModel {
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                System.out.println("IM DEAD");
                 for (DataSnapshot ds: dataSnapshot.getChildren()) {
                     Stop stop = new Stop();
                     stop.setName(ds.getKey());
@@ -73,11 +78,10 @@ public class MapViewModel extends ViewModel {
                     }
 
                     stop.setDepartures(departures);
-                    stops.add(stop);
-                    googleMap.addMarker(new MarkerOptions()
-                        .position(stop.getPoint())
-                        .title(stop.getName()));
+                    stopsDb.add(stop);
                 }
+
+                stops.setValue(stopsDb);
             }
 
             @Override

@@ -1,8 +1,10 @@
 package com.example.supera.kamil.quicktravel.fragments;
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,7 +48,17 @@ public class GoogleMapFragment extends Fragment {
         mMapView.getMapAsync(mMap -> {
             googleMap = mMap;
 
-            model.addStopsToMap(googleMap);
+            model.getStops().observe(this, new Observer<List<Stop>>() {
+                @Override
+                public void onChanged(@Nullable List<Stop> stops) {
+                    if (stops != null) {
+                        stops.stream().map(stop -> googleMap
+                            .addMarker(new MarkerOptions()
+                                .position(stop.getPoint())
+                                .title(stop.getName())));
+                    }
+                }
+            });
         });
 
         return rootView;
