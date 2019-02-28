@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 
 import com.example.supera.kamil.quicktravel.R;
 import com.example.supera.kamil.quicktravel.fragments.GoogleMapFragment;
@@ -45,12 +46,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
 
         Menu menu = navigationView.getMenu();
+        // Adding subMenu to make give user some description and make it not clickable.
+        SubMenu subMenu = menu.addSubMenu(R.string.nav_stop);
 
         model.getStops().observe(this, stops -> {
             if (stops != null) {
-                // Mark stops on map.
+                // Add items to SubMenu.
                 for (Stop stop : stops) {
-                    menu.add(stop.getName());
+                    subMenu.add(stop.getName());
                 }
             }
         });
@@ -71,6 +74,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        String title = item.getTitle().toString();
+
+        // TODO: Add intent to specific stop details instead of just closing drawer.
+
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
