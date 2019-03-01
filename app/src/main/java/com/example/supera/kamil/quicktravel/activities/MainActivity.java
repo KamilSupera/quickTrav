@@ -1,5 +1,6 @@
 package com.example.supera.kamil.quicktravel.activities;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -11,10 +12,17 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 
 import com.example.supera.kamil.quicktravel.R;
 import com.example.supera.kamil.quicktravel.fragments.GoogleMapFragment;
+import com.example.supera.kamil.quicktravel.models.Stop;
+import com.example.supera.kamil.quicktravel.viewmodels.StopViewModel;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.Objects;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -26,6 +34,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        StopViewModel model = ViewModelProviders.of(this)
+            .get(StopViewModel.class);
+
         //Set custom toolbar pass to actionbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -34,7 +45,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        // TODO: ADD STOPS TO DRAWER
+        Menu menu = navigationView.getMenu();
+        // Adding subMenu to make give user some description and make it not clickable.
+        SubMenu subMenu = menu.addSubMenu(R.string.nav_stop);
+
+        model.getStops().observe(this, stops -> {
+            if (stops != null) {
+                // Add items to SubMenu.
+                for (Stop stop : stops) {
+                    subMenu.add(stop.getName());
+                }
+            }
+        });
 
         //Rotate menu icon
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
@@ -52,6 +74,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        String title = item.getTitle().toString();
+
+        // TODO: Add intent to specific stop details instead of just closing drawer.
+
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
