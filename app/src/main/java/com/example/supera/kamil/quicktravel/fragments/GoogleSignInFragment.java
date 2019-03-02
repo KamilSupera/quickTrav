@@ -1,5 +1,6 @@
 package com.example.supera.kamil.quicktravel.fragments;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -67,7 +68,7 @@ public class GoogleSignInFragment extends Fragment implements View.OnClickListen
 
     private void signOut() {
         mGoogleSignInClient.signOut()
-            .addOnCompleteListener((Executor) this, new OnCompleteListener<Void>() {
+            .addOnCompleteListener((Activity) getContext(), new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     v.findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
@@ -81,8 +82,6 @@ public class GoogleSignInFragment extends Fragment implements View.OnClickListen
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
             v.findViewById(R.id.sign_in_button).setVisibility(View.INVISIBLE);
             v.findViewById(R.id.log_out_button).setVisibility(View.VISIBLE);
-
-
         } catch (ApiException e) {
             Toast.makeText(getContext(), "Logowanie nie udane.", Toast.LENGTH_LONG).show();
         }
