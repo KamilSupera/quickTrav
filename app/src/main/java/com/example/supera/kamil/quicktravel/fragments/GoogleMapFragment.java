@@ -11,11 +11,16 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.supera.kamil.quicktravel.R;
+import com.example.supera.kamil.quicktravel.gps_location.DeviceDisabled;
+import com.example.supera.kamil.quicktravel.gps_location.GPSLocation;
 import com.example.supera.kamil.quicktravel.models.Stop;
 import com.example.supera.kamil.quicktravel.viewmodels.StopViewModel;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.Objects;
@@ -58,6 +63,16 @@ public class GoogleMapFragment extends Fragment {
                     }
                 }
             });
+
+            GPSLocation gpsLocation = new GPSLocation(getContext(), getActivity());
+            try {
+                googleMap.addMarker(new MarkerOptions()
+                    .position(gpsLocation.getDeviceLocation())
+                    .title("Twoja pozycja"));
+
+            } catch (DeviceDisabled deviceDisabled) {
+                deviceDisabled.printStackTrace();
+            }
         });
 
         return rootView;
