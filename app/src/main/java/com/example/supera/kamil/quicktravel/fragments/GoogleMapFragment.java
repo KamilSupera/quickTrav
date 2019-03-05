@@ -13,6 +13,7 @@ import com.example.supera.kamil.quicktravel.gps_location.DeviceDisabled;
 import com.example.supera.kamil.quicktravel.gps_location.GPSLocation;
 import com.example.supera.kamil.quicktravel.models.Stop;
 import com.example.supera.kamil.quicktravel.viewmodels.StopViewModel;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
@@ -23,6 +24,7 @@ import java.util.Objects;
 public class GoogleMapFragment extends Fragment {
     private MapView mMapView;
     private GoogleMap googleMap;
+    private static float defZoom = 15f;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -60,10 +62,14 @@ public class GoogleMapFragment extends Fragment {
             });
 
             GPSLocation gpsLocation = new GPSLocation(getContext(), getActivity());
+
             try {
                 googleMap.addMarker(new MarkerOptions()
                     .position(gpsLocation.getDeviceLocation())
                     .title("Twoja pozycja"));
+
+                googleMap.moveCamera(CameraUpdateFactory
+                    .newLatLngZoom(gpsLocation.getDeviceLocation(), defZoom));
             } catch (DeviceDisabled deviceDisabled) {
                 deviceDisabled.printStackTrace();
             }

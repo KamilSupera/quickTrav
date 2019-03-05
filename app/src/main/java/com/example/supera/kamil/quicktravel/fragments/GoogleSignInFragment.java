@@ -97,7 +97,6 @@ public class GoogleSignInFragment extends Fragment implements View.OnClickListen
         }
     }
 
-
     @Override
     public void onStart() {
         super.onStart();

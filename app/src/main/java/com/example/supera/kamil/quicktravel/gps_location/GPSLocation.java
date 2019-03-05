@@ -19,9 +19,9 @@ import java.util.Locale;
 
 
 public class GPSLocation implements LocationListener {
-    LocationManager locationManager;
-    Activity activity;
-    Context context;
+    private LocationManager locationManager;
+    private Activity activity;
+    private Context context;
     private boolean permissionGPS = false;
     private boolean permisionNetwork = false;
 
@@ -49,6 +49,22 @@ public class GPSLocation implements LocationListener {
         } else {
             throw new CityLookupFail();
         }
+    }
+
+    public LatLng getDeviceLocation() throws DeviceDisabled {
+        initLocationManager();
+
+        if (checkDeviceEnabled()) {
+            if (permisionNetwork) {
+                return getCoordinates(LocationManager.NETWORK_PROVIDER);
+            }
+
+            if (permissionGPS) {
+                return getCoordinates(LocationManager.GPS_PROVIDER);
+            }
+        }
+
+        throw new DeviceDisabled();
     }
 
     private boolean checkPermission() {
@@ -91,31 +107,6 @@ public class GPSLocation implements LocationListener {
         return permissionGPS || permisionNetwork;
     }
 
-    private LatLng getCurrentLatLng(String provider) {
-        Location location = null;
-        LatLng latLng = null;
-        try {
-            if (checkPermission()) {
-                locationManager.requestLocationUpdates(
-                    provider,
-                    50000,
-                    10,
-                    this
-                );
-            }
-
-            if (locationManager != null) {
-                    latLng =  new LatLng(location.getLatitude(),
-                    location.getLongitude()
-                );
-            }
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return latLng;
-    }
-
     private LatLng getCoordinates(String provider) throws DeviceDisabled {
         if (checkPermission()) {
             locationManager.requestLocationUpdates(
@@ -141,23 +132,6 @@ public class GPSLocation implements LocationListener {
 
         throw new DeviceDisabled();
     }
-
-    public LatLng getDeviceLocation() throws DeviceDisabled {
-        initLocationManager();
-
-        if (checkDeviceEnabled()) {
-            if (permisionNetwork) {
-                return getCoordinates(LocationManager.NETWORK_PROVIDER);
-            }
-
-            if (permissionGPS) {
-                return getCoordinates(LocationManager.GPS_PROVIDER);
-            }
-        }
-
-        throw new DeviceDisabled();
-    }
-
 
     @Override
     public void onLocationChanged(Location location) {
