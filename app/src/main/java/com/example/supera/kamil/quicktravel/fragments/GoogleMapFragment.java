@@ -1,10 +1,8 @@
 package com.example.supera.kamil.quicktravel.fragments;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,9 +16,6 @@ import com.example.supera.kamil.quicktravel.viewmodels.StopViewModel;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.Objects;
@@ -69,7 +64,6 @@ public class GoogleMapFragment extends Fragment {
                 googleMap.addMarker(new MarkerOptions()
                     .position(gpsLocation.getDeviceLocation())
                     .title("Twoja pozycja"));
-
             } catch (DeviceDisabled deviceDisabled) {
                 deviceDisabled.printStackTrace();
             }
