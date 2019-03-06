@@ -24,7 +24,7 @@ import java.util.Objects;
 public class GoogleMapFragment extends Fragment {
     private MapView mMapView;
     private GoogleMap googleMap;
-    private static float defZoom = 15f;
+    private final float defZoom = 15f;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -64,12 +64,14 @@ public class GoogleMapFragment extends Fragment {
             GPSLocation gpsLocation = new GPSLocation(getContext(), getActivity());
 
             try {
+                LatLng location = gpsLocation.getDeviceLocation();
+
                 googleMap.addMarker(new MarkerOptions()
-                    .position(gpsLocation.getDeviceLocation())
+                    .position(location)
                     .title("Twoja pozycja"));
 
                 googleMap.moveCamera(CameraUpdateFactory
-                    .newLatLngZoom(gpsLocation.getDeviceLocation(), defZoom));
+                    .newLatLngZoom(location, defZoom));
             } catch (DeviceDisabled deviceDisabled) {
                 deviceDisabled.printStackTrace();
             }
