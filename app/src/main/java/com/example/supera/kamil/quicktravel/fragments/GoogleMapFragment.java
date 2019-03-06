@@ -1,18 +1,19 @@
 package com.example.supera.kamil.quicktravel.fragments;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.supera.kamil.quicktravel.R;
+import com.example.supera.kamil.quicktravel.gps_location.DeviceDisabled;
+import com.example.supera.kamil.quicktravel.gps_location.GPSLocation;
 import com.example.supera.kamil.quicktravel.models.Stop;
 import com.example.supera.kamil.quicktravel.viewmodels.StopViewModel;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
@@ -23,6 +24,7 @@ import java.util.Objects;
 public class GoogleMapFragment extends Fragment {
     private MapView mMapView;
     private GoogleMap googleMap;
+    private final float defZoom = 15f;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -58,6 +60,21 @@ public class GoogleMapFragment extends Fragment {
                     }
                 }
             });
+
+            GPSLocation gpsLocation = new GPSLocation(getContext(), getActivity());
+
+            try {
+                LatLng location = gpsLocation.getDeviceLocation();
+
+                googleMap.addMarker(new MarkerOptions()
+                    .position(location)
+                    .title("Twoja pozycja"));
+
+                googleMap.moveCamera(CameraUpdateFactory
+                    .newLatLngZoom(location, defZoom));
+            } catch (DeviceDisabled deviceDisabled) {
+                deviceDisabled.printStackTrace();
+            }
         });
 
         return rootView;
