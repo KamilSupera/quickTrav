@@ -11,11 +11,6 @@ public class OwnerComment {
 
     public OwnerComment() {}
 
-    public OwnerComment(String owner, Rating rating) {
-        this.owner = owner;
-        this.rating = rating;
-    }
-
     public String getOwner() {
         return owner;
     }

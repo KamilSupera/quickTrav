@@ -9,11 +9,6 @@ public class Departure {
 
     public Departure() {}
 
-    public Departure(String type, String time) {
-        this.type = type;
-        this.time = time;
-    }
-
     public String getType() {
         return type;
     }

@@ -8,11 +8,6 @@ public class Firm {
 
     public Firm() {}
 
-    public Firm(String name, String address) {
-        this.name = name;
-        this.address = address;
-    }
-
     public String getAddress() {
         return address;
     }

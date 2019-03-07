@@ -2,6 +2,10 @@ package com.example.supera.kamil.quicktravel.models;
 
 
 import android.support.annotation.NonNull;
+import android.view.SubMenu;
+
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.List;
 
@@ -11,17 +15,9 @@ public class Route {
     private Double maxTimeOfRide;
     private List<Stop> stops;
     private String name;
+    private String totalLength;
 
     public Route() {
-    }
-
-    public Route(List<OwnerComment> comments, List<Firm> firms, Double maxTimeOfRide,
-                 List<Stop> stops, String name) {
-        this.comments = comments;
-        this.firms = firms;
-        this.stops = stops;
-        this.name = name;
-        this.maxTimeOfRide = maxTimeOfRide;
     }
 
     public void setName(String name) {
@@ -44,6 +40,10 @@ public class Route {
         this.stops = stops;
     }
 
+    public void setTotalLength(String totalLength) {
+        this.totalLength = totalLength;
+    }
+
     public String getName() {
         return name;
     }
@@ -62,6 +62,32 @@ public class Route {
 
     public List<Stop> getStops() {
         return stops;
+    }
+
+    public String getTotalLength() {
+        return totalLength;
+    }
+
+    public void addStopsToMap(GoogleMap googleMap, String name) {
+        if (this.name.contains(name)) {
+            if (stops != null) {
+                for (Stop stop : stops) {
+                    googleMap.addMarker(new MarkerOptions()
+                        .position(stop.getPoint())
+                        .title(stop.getName()));
+                }
+            }
+        }
+    }
+
+    public void addStopsToDrawer(SubMenu subMenu, String name) {
+        if (this.name.contains(name)) {
+            if (stops != null) {
+                for (Stop stop : stops) {
+                    subMenu.add(stop.getName());
+                }
+            }
+        }
     }
 
     @NonNull
