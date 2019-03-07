@@ -16,9 +16,14 @@ public class StopMapper extends FirebaseMapper<Stop> {
 
     @Override
     public List<Stop> mapList(DataSnapshot dataSnapshot) {
+        return null;
+    }
+
+    @Override
+    public List<Stop> mapList(Iterable<DataSnapshot> dataSnapshot) {
         List<Stop> stops = new ArrayList<>();
 
-        for (DataSnapshot ds: dataSnapshot.getChildren()) {
+        for (DataSnapshot ds: dataSnapshot) {
             Stop stop = new Stop();
             stop.setName(ds.getKey());
             stop.setPoint(getGeoPoint(ds));

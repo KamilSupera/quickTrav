@@ -18,11 +18,12 @@ import android.view.SubMenu;
 
 import com.example.supera.kamil.quicktravel.R;
 import com.example.supera.kamil.quicktravel.fragments.GoogleMapFragment;
-import com.example.supera.kamil.quicktravel.models.Stop;
-import com.example.supera.kamil.quicktravel.viewmodels.StopViewModel;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.example.supera.kamil.quicktravel.gps_location.CityLookupFail;
+import com.example.supera.kamil.quicktravel.gps_location.DeviceDisabled;
+import com.example.supera.kamil.quicktravel.gps_location.GPSLocation;
+import com.example.supera.kamil.quicktravel.viewmodels.AppViewModel;
 
-import java.util.Objects;
+import java.io.IOException;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -34,8 +35,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        StopViewModel model = ViewModelProviders.of(this)
-            .get(StopViewModel.class);
+        AppViewModel model = ViewModelProviders.of(this)
+            .get(AppViewModel.class);
 
         //Set custom toolbar pass to actionbar
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -49,12 +50,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Adding subMenu to make give user some description and make it not clickable.
         SubMenu subMenu = menu.addSubMenu(R.string.nav_stop);
 
-        model.getStops().observe(this, stops -> {
-            if (stops != null) {
-                // Add items to SubMenu.
-                for (Stop stop : stops) {
-                    subMenu.add(stop.getName());
-                }
+        GPSLocation gps = new GPSLocation(getBaseContext(), this);
+
+        model.getRoutes().observe(this, routes -> {
+            if (routes != null) {
+                routes.forEach(route -> {
+                    try {
+                        route.addStopsToDrawer(subMenu, gps.getCityFromCurrentLocation());
+                    } catch (DeviceDisabled | IOException | CityLookupFail deviceDisabled) {
+                        deviceDisabled.printStackTrace();
+                        // TODO ADD BETTER EXCEPTION HANDLING
+                    }
+                });
             }
         });
 

@@ -15,13 +15,6 @@ public class Stop {
 
     public Stop() {}
 
-    public Stop(String name, List<Departure> departures, LatLng point, int numberInRoute) {
-        this.name = name;
-        this.departures = departures;
-        this.point = point;
-        this.numberInRoute = numberInRoute;
-    }
-
     public List<Departure> filterDeparturesByType(String type) {
         return departures.stream().filter(departure -> departure.getType().equals(type))
             .collect(Collectors.toList());
