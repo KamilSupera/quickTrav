@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 public class OwnerComment {
     private String owner;
     private Rating rating;
+    private String comment;
 
     public OwnerComment() {}
 
@@ -19,12 +20,20 @@ public class OwnerComment {
         return rating;
     }
 
+    public void getComment() {
+        return comment;
+    }
+
     public void setRating(Rating rating) {
         this.rating = rating;
     }
 
     public void setOwner(String owner) {
         this.owner = owner;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     @NonNull
