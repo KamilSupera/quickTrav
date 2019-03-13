@@ -6,6 +6,9 @@ import com.google.firebase.database.DataSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
+import static java.lang.Double.parseDouble;
 
 
 public class OwnerCommentMapper extends FirebaseMapper<OwnerComment> {
@@ -16,15 +19,23 @@ public class OwnerCommentMapper extends FirebaseMapper<OwnerComment> {
 
     @Override
     public List<OwnerComment> mapList(Iterable<DataSnapshot> dataSnapshot) {
-        // TODO: Add full map for OwnerComment model.
         List<OwnerComment> comments = new ArrayList<>();
 
         for (DataSnapshot ds : dataSnapshot) {
             OwnerComment comment = new OwnerComment();
-
+            comment.setOwner(ds.getKey());
+            loadRating(comment, ds);
             comments.add(comment);
         }
 
         return comments;
+    }
+
+    private void loadRating(OwnerComment comment, DataSnapshot dataSnapshot) {
+       for (DataSnapshot ds : dataSnapshot.getChildren()) {
+           (Objects.equals(ds.getKey(), "comment")) ?
+               comment.setComment(ds.getValue().toString()) :
+               comment.setRating(parseDouble(ds.getValue().toString()));
+       } 
     }
 }
