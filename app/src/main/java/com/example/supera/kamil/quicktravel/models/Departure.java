@@ -2,10 +2,12 @@ package com.example.supera.kamil.quicktravel.models;
 
 import android.support.annotation.NonNull;
 
+import java.util.List;
+
 
 public class Departure {
     private String type;
-    private String time;
+    private List<String> time;
 
     public Departure() {}
 
@@ -13,11 +15,11 @@ public class Departure {
         return type;
     }
 
-    public String getTime() {
+    public List<String> getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(List<String> time) {
         this.time = time;
     }
 
@@ -28,6 +30,6 @@ public class Departure {
     @NonNull
     @Override
     public String toString() {
-        return time;
+        return type;
     }
 }
