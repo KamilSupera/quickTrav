@@ -28,6 +28,7 @@ public class StopMapper extends FirebaseMapper<Stop> {
             stop.setName(ds.getKey());
             stop.setPoint(getGeoPoint(ds));
             stop.setDepartures(getDepartures(ds));
+            stop.setNumberInRoute(Integer.parseInt(ds.child("stopNumber").getValue().toString()));
             stops.add(stop);
         }
 
@@ -70,9 +71,13 @@ public class StopMapper extends FirebaseMapper<Stop> {
             for (DataSnapshot type : departuresS.getChildren()) {
                 departure.setType(type.getKey());
 
+                List<String> times = new ArrayList<>();
+
                 for (DataSnapshot time : type.getChildren()) {
-                    departure.setTime(time.getValue().toString());
+                    times.add(time.getValue().toString());
                 }
+
+                departure.setTime(times);
             }
 
             departures.add(departure);
