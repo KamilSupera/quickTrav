@@ -1,6 +1,7 @@
 package com.example.supera.kamil.quicktravel.fragments;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -9,28 +10,34 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.supera.kamil.quicktravel.R;
-import com.example.supera.kamil.quicktravel.gps_location.CityLookupFail;
+import com.example.supera.kamil.quicktravel.activities.MainActivity;
+import com.example.supera.kamil.quicktravel.activities.RoutesActivity;
 import com.example.supera.kamil.quicktravel.gps_location.DeviceDisabled;
 import com.example.supera.kamil.quicktravel.gps_location.GPSLocation;
+import com.example.supera.kamil.quicktravel.models.Route;
+import com.example.supera.kamil.quicktravel.utils.AppViewModelActions;
 import com.example.supera.kamil.quicktravel.viewmodels.AppViewModel;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.io.IOException;
 import java.util.Objects;
 
-public class GoogleMapFragment extends Fragment {
+public class GoogleMapFragment extends Fragment implements GoogleMap.OnMarkerClickListener {
     private MapView mMapView;
     private GoogleMap googleMap;
     private final float defZoom = 15f;
+    private final String userPosition = "Twoja pozycja";
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.map_fragment, container, false);
+
+        Bundle bundle = getArguments();
 
         AppViewModel model = ViewModelProviders.of(Objects.requireNonNull(getActivity()))
             .get(AppViewModel.class);
@@ -51,31 +58,18 @@ public class GoogleMapFragment extends Fragment {
         mMapView.getMapAsync(mMap -> {
             googleMap = mMap;
 
-            GPSLocation gpsLocation = new GPSLocation(getContext(), getActivity());
+            googleMap.setOnMarkerClickListener(this);
 
-            model.getRoutes().observe(this, routes -> {
-                if (routes != null) {
-                    routes.forEach(route -> {
-                        try {
-                            route.addStopsToMap(googleMap, gpsLocation.getCityFromCurrentLocation());
-                        } catch (DeviceDisabled deviceDisabled) {
-                            deviceDisabled.printStackTrace();
-                            // TODO ADD BETTER EXCEPTION HANDLING
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        } catch (CityLookupFail cityLookupFail) {
-                            cityLookupFail.printStackTrace();
-                        }
-                    });
-                }
-            });
+            GPSLocation gpsLocation = new GPSLocation(getContext(), getActivity());
+            AppViewModelActions.mapFragmentViewModelUsage(this, model,
+                googleMap, bundle, gpsLocation);
 
             try {
                 LatLng location = gpsLocation.getDeviceLocation();
 
                 googleMap.addMarker(new MarkerOptions()
                     .position(location)
-                    .title("Twoja pozycja"));
+                    .title(userPosition));
 
                 googleMap.moveCamera(CameraUpdateFactory
                     .newLatLngZoom(location, defZoom));
@@ -85,5 +79,20 @@ public class GoogleMapFragment extends Fragment {
         });
 
         return rootView;
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        String title = marker.getTitle();
+
+        if (!title.equals(userPosition)) {
+            if (getActivity().getClass() == MainActivity.class) {
+                Intent intent = new Intent(getActivity(), RoutesActivity.class);
+                intent.putExtra("title", title);
+                startActivity(intent);
+            }
+        }
+
+        return false;
     }
 }
