@@ -33,9 +33,11 @@ public class OwnerCommentMapper extends FirebaseMapper<OwnerComment> {
 
     private void loadRating(OwnerComment comment, DataSnapshot dataSnapshot) {
        for (DataSnapshot ds : dataSnapshot.getChildren()) {
-           (Objects.equals(ds.getKey(), "comment")) ?
-               comment.setComment(ds.getValue().toString()) :
+           if ((Objects.equals(ds.getKey(), "comment"))) {
+               comment.setComment(ds.getValue().toString());
+           } else {
                comment.setRating(parseDouble(ds.getValue().toString()));
+           }
        } 
     }
 }

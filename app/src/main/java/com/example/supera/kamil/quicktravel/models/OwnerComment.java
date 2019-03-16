@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
  */
 public class OwnerComment {
     private String owner;
-    private Rating rating;
+    private Double rating;
     private String comment;
 
     public OwnerComment() {}
@@ -16,15 +16,15 @@ public class OwnerComment {
         return owner;
     }
 
-    public Rating getRating() {
+    public Double getRating() {
         return rating;
     }
 
-    public void getComment() {
+    public String getComment() {
         return comment;
     }
 
-    public void setRating(Rating rating) {
+    public void setRating(Double rating) {
         this.rating = rating;
     }
 

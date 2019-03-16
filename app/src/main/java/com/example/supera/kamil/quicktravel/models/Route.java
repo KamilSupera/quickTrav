@@ -5,9 +5,13 @@ import android.support.annotation.NonNull;
 import android.view.SubMenu;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class Route {
     private List<OwnerComment> comments;
@@ -69,25 +73,60 @@ public class Route {
     }
 
     public void addStopsToMap(GoogleMap googleMap, String name) {
-        if (this.name.contains(name)) {
-            if (stops != null) {
-                for (Stop stop : stops) {
-                    googleMap.addMarker(new MarkerOptions()
-                        .position(stop.getPoint())
-                        .title(stop.getName()));
-                }
+        if (this.name.contains(name) && stops != null) {
+            for (Stop stop : stops) {
+                addStopAsMarker(googleMap, stop);
             }
         }
     }
 
     public void addStopsToDrawer(SubMenu subMenu, String name) {
-        if (this.name.contains(name)) {
-            if (stops != null) {
-                for (Stop stop : stops) {
-                    subMenu.add(stop.getName());
-                }
+        if (this.name.contains(name) && stops != null) {
+            for (Stop stop : stops) {
+                subMenu.add(stop.getName());
             }
         }
+    }
+
+    /**
+     * Checks if route posses any stop with given name.
+     * @param name
+     * @return True if posses, false when not.
+     */
+    public boolean checkIfRoutePossesStop(String name) {
+        return stops
+            .stream()
+            .anyMatch(stop -> stop.getName().equals(name));
+    }
+
+    /**
+     * Add stops to map for specified earlier route. Change color of the clicked one.
+     * @param googleMap
+     * @param name
+     */
+    public void addStopsToMapWithOneChangedColor(GoogleMap googleMap, String name) {
+        for (Stop stop : stops) {
+            if (stop.getName().contains(name)) {
+                addStopsAsMarkerWithColorChange(googleMap, stop,
+                    BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
+            } else {
+                addStopAsMarker(googleMap, stop);
+            }
+        }
+    }
+
+    private void addStopAsMarker(GoogleMap googleMap, Stop stop) {
+        googleMap.addMarker(new MarkerOptions()
+            .position(stop.getPoint())
+            .title(stop.getName()));
+    }
+
+    private void addStopsAsMarkerWithColorChange(GoogleMap googleMap, Stop stop,
+                                                 BitmapDescriptor descriptor) {
+        googleMap.addMarker(new MarkerOptions()
+            .position(stop.getPoint())
+            .title(stop.getName())
+            .icon(descriptor));
     }
 
     @NonNull
