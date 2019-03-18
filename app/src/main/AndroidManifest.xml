@@ -50,6 +50,11 @@
             android:name=".activities.RoutesActivity"
             android:parentActivityName=".activities.MainActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"/>
+
+        <activity
+            android:name=".activities.RouteDetailActivity"
+            android:parentActivityName=".activities.RoutesActivity"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"/>
     </application>
 
 </manifest>

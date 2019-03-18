@@ -7,7 +7,7 @@ import com.google.android.gms.maps.model.LatLng;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Stop {
+public class Stop implements Comparable<Stop> {
     private String name;
     private List<Departure> departures;
     private LatLng point;
@@ -56,5 +56,14 @@ public class Stop {
     @Override
     public String toString() {
         return name;
+    }
+
+    @Override
+    public int compareTo(Stop o) {
+        if (o.getNumberInRoute() > this.getNumberInRoute()) {
+            return -1;
+        } else {
+            return 1;
+        }
     }
 }

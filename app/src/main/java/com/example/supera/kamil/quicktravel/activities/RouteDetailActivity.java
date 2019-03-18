@@ -1,7 +1,6 @@
 package com.example.supera.kamil.quicktravel.activities;
 
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -21,17 +20,15 @@ import com.example.supera.kamil.quicktravel.utils.AppViewModelActions;
 import com.example.supera.kamil.quicktravel.utils.Utils;
 import com.example.supera.kamil.quicktravel.viewmodels.AppViewModel;
 
-
-public class RoutesActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    public DrawerLayout drawer;
-    private FragmentManager fragmentManager;
+public class RouteDetailActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+    private DrawerLayout drawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.routes);
+        setContentView(R.layout.route_details);
 
-        String title = getIntent().getStringExtra("title");
+        String route = getIntent().getStringExtra("route");
 
         AppViewModel model = ViewModelProviders.of(this)
             .get(AppViewModel.class);
@@ -48,26 +45,15 @@ public class RoutesActivity extends AppCompatActivity implements NavigationView.
         // Adding subMenu to make give user some description and make it not clickable.
         SubMenu subMenu = menu.addSubMenu(R.string.nav_routes);
 
-        AppViewModelActions.loadRoutesToDrawer(this, model, subMenu, title);
         Utils.rotateBar(drawer, toolbar, this);
 
-        fragmentManager = this.getSupportFragmentManager();
+        FragmentManager fragmentManager = this.getSupportFragmentManager();
         Fragment map = new GoogleMapFragment();
         Bundle bundle = new Bundle();
-        bundle.putString("type", "routes");
-        bundle.putString("title", title);
+        bundle.putString("type", "route_detail");
+        bundle.putString("route", route);
         map.setArguments(bundle);
         Utils.swapFragment(fragmentManager, map);
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        Intent intent = new Intent(this, RouteDetailActivity.class);
-        intent.putExtra("route", menuItem.getTitle().toString());
-        startActivity(intent);
-
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
     }
 
     /**
@@ -82,5 +68,10 @@ public class RoutesActivity extends AppCompatActivity implements NavigationView.
         }
 
         finish();
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        return false;
     }
 }
