@@ -1,17 +1,20 @@
 package com.example.supera.kamil.quicktravel.models;
 
 
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.view.SubMenu;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 public class Route {
     private List<OwnerComment> comments;
@@ -113,6 +116,21 @@ public class Route {
                 addStopAsMarker(googleMap, stop);
             }
         }
+    }
+
+    public void drawRoute(GoogleMap googleMap) {
+        PolylineOptions line = new PolylineOptions();
+        line.color(Color.RED);
+        line.width(6f);
+        line.geodesic(true);
+
+        List<LatLng> points = new ArrayList<>();
+
+        for (Stop stop : stops) {
+            line.add(stop.getPoint());
+        }
+
+        googleMap.addPolyline(line);
     }
 
     private void addStopAsMarker(GoogleMap googleMap, Stop stop) {

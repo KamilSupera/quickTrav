@@ -1,6 +1,7 @@
 package com.example.supera.kamil.quicktravel.activities;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -46,13 +47,14 @@ public class RoutesActivity extends AppCompatActivity implements NavigationView.
         Menu menu = navigationView.getMenu();
         // Adding subMenu to make give user some description and make it not clickable.
         SubMenu subMenu = menu.addSubMenu(R.string.nav_routes);
-
         AppViewModelActions.loadRoutesToDrawer(this, model, subMenu, title);
+
         Utils.rotateBar(drawer, toolbar, this);
 
         fragmentManager = this.getSupportFragmentManager();
         Fragment map = new GoogleMapFragment();
         Bundle bundle = new Bundle();
+        bundle.putString("type", "routes");
         bundle.putString("title", title);
         map.setArguments(bundle);
         Utils.swapFragment(fragmentManager, map);
@@ -60,7 +62,12 @@ public class RoutesActivity extends AppCompatActivity implements NavigationView.
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        return false;
+        Intent intent = new Intent(this, RouteDetailActivity.class);
+        intent.putExtra("route", menuItem.getTitle().toString());
+        startActivity(intent);
+
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 
     /**

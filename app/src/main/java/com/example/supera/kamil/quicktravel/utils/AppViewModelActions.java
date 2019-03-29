@@ -15,6 +15,7 @@ import com.example.supera.kamil.quicktravel.viewmodels.AppViewModel;
 import com.google.android.gms.maps.GoogleMap;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -74,6 +75,27 @@ public class AppViewModelActions {
     }
 
     /**
+     * Load route's stop to drawer in RouteDetailsActivity.
+     * @param owner
+     * @param model
+     * @param subMenu
+     * @param routeName
+     */
+    public static void routeDetails(LifecycleOwner owner, AppViewModel model,
+                                    SubMenu subMenu, String routeName) {
+        model.getRoutes().observe(owner, routes -> {
+            if (routes != null) {
+                routes.stream().forEach(route -> {
+                    if (route.getName().equals(routeName)) {
+                        Collections.sort(route.getStops());
+                        route.addStopsToDrawer(subMenu, routeName);
+                    }
+                });
+            }
+        });
+    }
+
+    /**
      * All usage of observe in:
      * {@link com.example.supera.kamil.quicktravel.fragments.GoogleMapFragment}
      * @param owner
@@ -85,14 +107,25 @@ public class AppViewModelActions {
     public static void mapFragmentViewModelUsage(LifecycleOwner owner, AppViewModel model,
                                                  GoogleMap googleMap, Bundle bundle, GPSLocation gpsLocation) {
         model.getRoutes().observe(owner, routes -> {
-            if (bundle != null) {
-                String title = bundle.getString("title");
+            if (routes != null) {
+                if (bundle != null) {
+                    String type = bundle.getString("type");
 
-                if (routes != null) {
-                    loadStopsBelongedToRoute(routes, googleMap, title);
-                }
-            } else {
-                if (routes != null) {
+                    if (type.equals("route_detail")) {
+                        String routeName = bundle.getString("route");
+
+                        routes.stream().forEach(route -> {
+                            if (route.getName().equals(routeName)) {
+                                Collections.sort(route.getStops());
+                                route.addStopsToMap(googleMap, routeName);
+                                route.drawRoute(googleMap);
+                            }
+                        });
+                    } else {
+                        String title = bundle.getString("title");
+                        loadStopsBelongedToRoute(routes, googleMap, title);
+                    }
+                } else {
                     loadStopsToMap(routes, googleMap, gpsLocation);
                 }
             }
