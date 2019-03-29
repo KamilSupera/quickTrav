@@ -75,6 +75,27 @@ public class AppViewModelActions {
     }
 
     /**
+     * Load route's stop to drawer in RouteDetailsActivity.
+     * @param owner
+     * @param model
+     * @param subMenu
+     * @param routeName
+     */
+    public static void routeDetails(LifecycleOwner owner, AppViewModel model,
+                                    SubMenu subMenu, String routeName) {
+        model.getRoutes().observe(owner, routes -> {
+            if (routes != null) {
+                routes.stream().forEach(route -> {
+                    if (route.getName().equals(routeName)) {
+                        Collections.sort(route.getStops());
+                        route.addStopsToDrawer(subMenu, routeName);
+                    }
+                });
+            }
+        });
+    }
+
+    /**
      * All usage of observe in:
      * {@link com.example.supera.kamil.quicktravel.fragments.GoogleMapFragment}
      * @param owner

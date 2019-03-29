@@ -49,8 +49,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Menu menu = navigationView.getMenu();
         // Adding subMenu to make give user some description and make it not clickable.
         SubMenu subMenu = menu.addSubMenu(R.string.nav_stop);
-
         AppViewModelActions.loadStopsToDrawer(this, this, model, subMenu, drawer);
+
         Utils.rotateBar(drawer, toolbar, this);
 
         FragmentManager fragmentManager = this.getSupportFragmentManager();

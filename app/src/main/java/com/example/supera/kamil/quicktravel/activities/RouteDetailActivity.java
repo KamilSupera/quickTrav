@@ -44,6 +44,7 @@ public class RouteDetailActivity extends AppCompatActivity implements Navigation
         Menu menu = navigationView.getMenu();
         // Adding subMenu to make give user some description and make it not clickable.
         SubMenu subMenu = menu.addSubMenu(R.string.nav_routes);
+        AppViewModelActions.routeDetails(this, model, subMenu, route);
 
         Utils.rotateBar(drawer, toolbar, this);
 
