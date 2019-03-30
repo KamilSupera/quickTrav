@@ -7,4 +7,6 @@
     <string name="nav_drawer_open">Otwórz panel nawigacyjny</string>
     <string name="nav_drawer_close">Zamknij panel nawigacyjny</string>
     <string name="nav_log_out">Wyloguj</string>
+    <string name="header_weekend">Rozkład jazdy na weekend:</string>
+    <string name="header_worker">Rozkład jazdy dla dni pracujących:</string>
 </resources>

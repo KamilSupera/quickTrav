@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.view.SubMenu;
 
+import com.example.supera.kamil.quicktravel.NoStop;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -131,6 +132,16 @@ public class Route {
         }
 
         googleMap.addPolyline(line);
+    }
+
+    public List<Departure> getStopDepartures(String stopName, String type) throws NoStop {
+        for (Stop stop : stops) {
+            if (stop.getName().equals(stopName)) {
+                return stop.filterDeparturesByType(type);
+            }
+        }
+
+        throw new NoStop();
     }
 
     private void addStopAsMarker(GoogleMap googleMap, Stop stop) {

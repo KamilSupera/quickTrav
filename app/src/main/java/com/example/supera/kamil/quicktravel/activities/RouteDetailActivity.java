@@ -1,6 +1,7 @@
 package com.example.supera.kamil.quicktravel.activities;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -22,13 +23,14 @@ import com.example.supera.kamil.quicktravel.viewmodels.AppViewModel;
 
 public class RouteDetailActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawer;
+    private String route;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.route_details);
 
-        String route = getIntent().getStringExtra("route");
+        route = getIntent().getStringExtra("route");
 
         AppViewModel model = ViewModelProviders.of(this)
             .get(AppViewModel.class);
@@ -57,6 +59,17 @@ public class RouteDetailActivity extends AppCompatActivity implements Navigation
         Utils.swapFragment(fragmentManager, map);
     }
 
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        Intent intent = new Intent(this, StopsActivity.class);
+        intent.putExtra("stop", menuItem.getTitle().toString());
+        intent.putExtra("route", route);
+        startActivity(intent);
+
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
     /**
      * Close nav drawer when open and finish current activity to reload parent.
      */
@@ -69,10 +82,5 @@ public class RouteDetailActivity extends AppCompatActivity implements Navigation
         }
 
         finish();
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        return false;
     }
 }
