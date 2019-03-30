@@ -55,6 +55,10 @@
             android:name=".activities.RouteDetailActivity"
             android:parentActivityName=".activities.RoutesActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"/>
+
+        <activity
+            android:name=".activities.StopsActivity"
+            android:parentActivityName=".activities.RouteDetailActivity"/>
     </application>
 
 </manifest>

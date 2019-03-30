@@ -67,10 +67,9 @@ public class StopMapper extends FirebaseMapper<Stop> {
         // Load departures for specific stop.
         for (DataSnapshot departuresS : dataSnapshot.child("departures").getChildren()) {
             Departure departure = new Departure();
+            departure.setType(departuresS.getKey());
 
             for (DataSnapshot type : departuresS.getChildren()) {
-                departure.setType(type.getKey());
-
                 List<String> times = new ArrayList<>();
 
                 for (DataSnapshot time : type.getChildren()) {
