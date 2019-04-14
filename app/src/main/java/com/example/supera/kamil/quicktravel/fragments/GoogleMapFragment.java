@@ -23,6 +23,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -73,6 +75,8 @@ public class GoogleMapFragment extends Fragment implements GoogleMap.OnMarkerCli
 
                     if (exist.size() > 0) {
                         likeButton.hide();
+                    } else {
+                        unlike.hide();
                     }
                 } else {
                     unlike.hide();
@@ -113,7 +117,8 @@ public class GoogleMapFragment extends Fragment implements GoogleMap.OnMarkerCli
 
                 googleMap.addMarker(new MarkerOptions()
                     .position(location)
-                    .title(userPosition));
+                    .title(userPosition)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA)));
 
                 googleMap.moveCamera(CameraUpdateFactory
                     .newLatLngZoom(location, defZoom));

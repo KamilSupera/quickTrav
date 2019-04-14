@@ -3,6 +3,7 @@ package com.example.supera.kamil.quicktravel.gps_location;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -11,6 +12,8 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+
+import com.example.supera.kamil.quicktravel.activities.MainActivity;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;

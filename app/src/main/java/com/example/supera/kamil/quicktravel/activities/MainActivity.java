@@ -63,8 +63,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Intent intent = new Intent(this, RoutesActivity.class);
         intent.putExtra("title", item.getTitle().toString());
         startActivity(intent);
-
         drawer.closeDrawer(GravityCompat.START);
+
         return true;
     }
 

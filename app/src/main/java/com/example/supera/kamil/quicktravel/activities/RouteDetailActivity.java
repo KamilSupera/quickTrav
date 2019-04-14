@@ -50,6 +50,8 @@ public class RouteDetailActivity extends AppCompatActivity implements Navigation
 
         Utils.rotateBar(drawer, toolbar, this);
 
+        menu.add("Cofnij");
+
         FragmentManager fragmentManager = this.getSupportFragmentManager();
         Fragment map = new GoogleMapFragment();
         Bundle bundle = new Bundle();
@@ -61,12 +63,16 @@ public class RouteDetailActivity extends AppCompatActivity implements Navigation
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        Intent intent = new Intent(this, StopsActivity.class);
-        intent.putExtra("stop", menuItem.getTitle().toString());
-        intent.putExtra("route", route);
-        startActivity(intent);
+        if (menuItem.getTitle().toString().equals("Cofnij")) {
+            onBackPressed();
+        } else {
+            Intent intent = new Intent(this, StopsActivity.class);
+            intent.putExtra("stop", menuItem.getTitle().toString());
+            intent.putExtra("route", route);
+            startActivity(intent);
+            drawer.closeDrawer(GravityCompat.START);
+        }
 
-        drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 

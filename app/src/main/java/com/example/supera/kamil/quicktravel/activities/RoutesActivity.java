@@ -51,6 +51,8 @@ public class RoutesActivity extends AppCompatActivity implements NavigationView.
 
         Utils.rotateBar(drawer, toolbar, this);
 
+        menu.add("Cofnij");
+
         fragmentManager = this.getSupportFragmentManager();
         Fragment map = new GoogleMapFragment();
         Bundle bundle = new Bundle();
@@ -62,11 +64,14 @@ public class RoutesActivity extends AppCompatActivity implements NavigationView.
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        Intent intent = new Intent(this, RouteDetailActivity.class);
-        intent.putExtra("route", menuItem.getTitle().toString());
-        startActivity(intent);
-
-        drawer.closeDrawer(GravityCompat.START);
+        if (menuItem.getTitle().toString().equals("Cofnij")) {
+            onBackPressed();
+        } else {
+            Intent intent = new Intent(this, RouteDetailActivity.class);
+            intent.putExtra("route", menuItem.getTitle().toString());
+            startActivity(intent);
+            drawer.closeDrawer(GravityCompat.START);
+        }
         return true;
     }
 

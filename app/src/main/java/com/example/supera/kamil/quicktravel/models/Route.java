@@ -98,9 +98,13 @@ public class Route {
      * @return True if posses, false when not.
      */
     public boolean checkIfRoutePossesStop(String name) {
-        return stops
-            .stream()
-            .anyMatch(stop -> stop.getName().equals(name));
+        if (stops != null){
+            return stops
+                .stream()
+                .anyMatch(stop -> stop.getName().equals(name));
+        }
+
+        return false;
     }
 
     /**
