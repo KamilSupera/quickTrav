@@ -1,7 +1,10 @@
 package com.example.supera.kamil.quicktravel.activities;
 
+import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -25,9 +28,10 @@ import com.example.supera.kamil.quicktravel.utils.Utils;
 import com.example.supera.kamil.quicktravel.viewmodels.AppViewModel;
 
 import java.io.IOException;
+import java.util.Set;
 
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity {
     public DrawerLayout drawer;
 
     @Override
@@ -44,29 +48,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setNavigationItemSelectedListener(new MainNavigation(this));
+
+        NavigationView nav2 = findViewById(R.id.likes_nav);
+        nav2.setNavigationItemSelectedListener(new LikesNavigation(this));
 
         Menu menu = navigationView.getMenu();
+        Menu likesMenu = nav2.getMenu();
         // Adding subMenu to make give user some description and make it not clickable.
         SubMenu subMenu = menu.addSubMenu(R.string.nav_stop);
         AppViewModelActions.loadStopsToDrawer(this, this, model, subMenu, drawer);
 
         Utils.rotateBar(drawer, toolbar, this);
 
+        Context context = getApplicationContext();
+        SharedPreferences preferences = context.getSharedPreferences(
+            getString(R.string.preferences_file_key), Context.MODE_PRIVATE);
+
+        Set<String> likes = preferences.getStringSet("likes", null);
+
+        if (likes != null) {
+            likes.forEach(likesMenu::add);
+        }
+
         FragmentManager fragmentManager = this.getSupportFragmentManager();
         Fragment map = new GoogleMapFragment();
         Utils.swapFragment(fragmentManager, map);
     }
 
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        Intent intent = new Intent(this, RoutesActivity.class);
-        intent.putExtra("title", item.getTitle().toString());
-        startActivity(intent);
-        drawer.closeDrawer(GravityCompat.START);
-
-        return true;
-    }
 
     /**
      * Close nav drawer when open. Protect for closed app when drawer nav open.
@@ -77,6 +86,43 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
+        }
+    }
+
+    private class MainNavigation implements NavigationView.OnNavigationItemSelectedListener {
+        private Activity activity;
+
+        public MainNavigation(Activity activity) {
+            this.activity = activity;
+        }
+
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            Intent intent = new Intent(activity, RoutesActivity.class);
+            intent.putExtra("title", item.getTitle().toString());
+            startActivity(intent);
+
+            drawer.closeDrawer(GravityCompat.START);
+            return true;
+        }
+    }
+
+    private class LikesNavigation implements NavigationView.OnNavigationItemSelectedListener {
+        private Activity activity;
+
+        public LikesNavigation(Activity activity) {
+            this.activity = activity;
+        }
+
+
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+            Intent intent = new Intent(activity, RouteDetailActivity.class);
+            intent.putExtra("route", menuItem.getTitle().toString());
+            startActivity(intent);
+            drawer.closeDrawer(GravityCompat.END);
+
+            return true;
         }
     }
 }

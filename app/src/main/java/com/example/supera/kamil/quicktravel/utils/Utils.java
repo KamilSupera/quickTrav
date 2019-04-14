@@ -1,6 +1,8 @@
 package com.example.supera.kamil.quicktravel.utils;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -9,6 +11,8 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 
 import com.example.supera.kamil.quicktravel.R;
+
+import java.util.Set;
 
 public class Utils {
 

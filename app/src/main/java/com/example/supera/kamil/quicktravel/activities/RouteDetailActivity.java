@@ -1,7 +1,10 @@
 package com.example.supera.kamil.quicktravel.activities;
 
+import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -21,7 +24,9 @@ import com.example.supera.kamil.quicktravel.utils.AppViewModelActions;
 import com.example.supera.kamil.quicktravel.utils.Utils;
 import com.example.supera.kamil.quicktravel.viewmodels.AppViewModel;
 
-public class RouteDetailActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+import java.util.Set;
+
+public class RouteDetailActivity extends AppCompatActivity {
     private DrawerLayout drawer;
     private String route;
 
@@ -41,9 +46,13 @@ public class RouteDetailActivity extends AppCompatActivity implements Navigation
 
         drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setNavigationItemSelectedListener(new MainNavigation(this));
+
+        NavigationView nav2 = findViewById(R.id.likes_nav);
+        nav2.setNavigationItemSelectedListener(new LikesNavigation(this));
 
         Menu menu = navigationView.getMenu();
+        Menu likesMenu = nav2.getMenu();
         // Adding subMenu to make give user some description and make it not clickable.
         SubMenu subMenu = menu.addSubMenu(R.string.nav_routes);
         AppViewModelActions.routeDetails(this, model, subMenu, route);
@@ -52,6 +61,16 @@ public class RouteDetailActivity extends AppCompatActivity implements Navigation
 
         menu.add("Cofnij");
 
+        Context context = getApplicationContext();
+        SharedPreferences preferences = context.getSharedPreferences(
+            getString(R.string.preferences_file_key), Context.MODE_PRIVATE);
+
+        Set<String> likes = preferences.getStringSet("likes", null);
+
+        if (likes != null) {
+            likes.forEach(likesMenu::add);
+        }
+
         FragmentManager fragmentManager = this.getSupportFragmentManager();
         Fragment map = new GoogleMapFragment();
         Bundle bundle = new Bundle();
@@ -59,21 +78,6 @@ public class RouteDetailActivity extends AppCompatActivity implements Navigation
         bundle.putString("route", route);
         map.setArguments(bundle);
         Utils.swapFragment(fragmentManager, map);
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        if (menuItem.getTitle().toString().equals("Cofnij")) {
-            onBackPressed();
-        } else {
-            Intent intent = new Intent(this, StopsActivity.class);
-            intent.putExtra("stop", menuItem.getTitle().toString());
-            intent.putExtra("route", route);
-            startActivity(intent);
-            drawer.closeDrawer(GravityCompat.START);
-        }
-
-        return true;
     }
 
     /**
@@ -88,5 +92,47 @@ public class RouteDetailActivity extends AppCompatActivity implements Navigation
         }
 
         finish();
+    }
+
+    private class MainNavigation implements NavigationView.OnNavigationItemSelectedListener {
+        private Activity activity;
+
+        public MainNavigation(Activity activity) {
+            this.activity = activity;
+        }
+
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+            if (menuItem.getTitle().toString().equals("Cofnij")) {
+                onBackPressed();
+            } else {
+                Intent intent = new Intent(activity, StopsActivity.class);
+                intent.putExtra("stop", menuItem.getTitle().toString());
+                intent.putExtra("route", route);
+                startActivity(intent);
+                drawer.closeDrawer(GravityCompat.START);
+            }
+
+            return true;
+        }
+    }
+
+    private class LikesNavigation implements NavigationView.OnNavigationItemSelectedListener {
+        private Activity activity;
+
+        public LikesNavigation(Activity activity) {
+            this.activity = activity;
+        }
+
+
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+            Intent intent = new Intent(activity, RouteDetailActivity.class);
+            intent.putExtra("route", menuItem.getTitle().toString());
+            startActivity(intent);
+            drawer.closeDrawer(GravityCompat.END);
+
+            return true;
+        }
     }
 }
