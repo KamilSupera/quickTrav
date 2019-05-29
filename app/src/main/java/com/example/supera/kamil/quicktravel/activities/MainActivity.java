@@ -1,12 +1,15 @@
 package com.example.supera.kamil.quicktravel.activities;
 
+import android.Manifest;
 import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
@@ -39,8 +42,31 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        boolean permissionStatus = true;
+
+        if (permissionChecker(Manifest.permission.ACCESS_FINE_LOCATION)) {
+            permissionStatus = false;
+        }
+
+        if (permissionChecker(Manifest.permission.ACCESS_COARSE_LOCATION)) {
+            permissionStatus = false;
+        }
+
+        if (!permissionStatus) {
+            String[] permissions = {
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            };
+
+            ActivityCompat.requestPermissions(this, permissions, 200);
+        }
+
         AppViewModel model = ViewModelProviders.of(this)
             .get(AppViewModel.class);
+
+        FragmentManager fragmentManager = this.getSupportFragmentManager();
+        Fragment map = new GoogleMapFragment();
+        Utils.swapFragment(fragmentManager, map);
 
         //Set custom toolbar pass to actionbar
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -57,8 +83,6 @@ public class MainActivity extends AppCompatActivity {
         Menu likesMenu = nav2.getMenu();
         // Adding subMenu to make give user some description and make it not clickable.
         SubMenu subMenu = menu.addSubMenu(R.string.nav_stop);
-        AppViewModelActions.loadStopsToDrawer(this, this, model, subMenu, drawer);
-
         Utils.rotateBar(drawer, toolbar, this);
 
         Context context = getApplicationContext();
@@ -71,9 +95,7 @@ public class MainActivity extends AppCompatActivity {
             likes.forEach(likesMenu::add);
         }
 
-        FragmentManager fragmentManager = this.getSupportFragmentManager();
-        Fragment map = new GoogleMapFragment();
-        Utils.swapFragment(fragmentManager, map);
+        AppViewModelActions.loadStopsToDrawer(this, this, model, subMenu, drawer);
     }
 
 
@@ -124,5 +146,25 @@ public class MainActivity extends AppCompatActivity {
 
             return true;
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // If permission request was displayed check if user accept it or not.
+        // Refresh activity if permission was granted do nothing otherwise.
+        if (grantResults.length != 0) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                finish();
+                startActivity(getIntent());
+            }
+        }
+    }
+
+
+    private boolean permissionChecker(String permission) {
+        return ActivityCompat.checkSelfPermission(this, permission)
+            != PackageManager.PERMISSION_GRANTED;
     }
 }
