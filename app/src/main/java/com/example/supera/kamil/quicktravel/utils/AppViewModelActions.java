@@ -43,6 +43,8 @@ public class AppViewModelActions {
             if (routes != null) {
                 routes.forEach(route -> {
                     try {
+                        System.out.println("XDDDDDD");
+                        System.out.println(route.getRating());
                         route.addStopsToDrawer(subMenu, gps.getCityFromCurrentLocation());
                     } catch (DeviceDisabled | IOException | CityLookupFail deviceDisabled) {
                         deviceDisabled.printStackTrace();
