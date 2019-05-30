@@ -29,6 +29,19 @@ public class Utils {
     }
 
     /**
+     * Replace fragment with specific container.
+     * @param manager
+     * @param fragment
+     * @param id - Container id.
+     */
+    public static void swapFragment(FragmentManager manager, Fragment fragment, int id) {
+        FragmentTransaction fragmentTransaction = manager.beginTransaction();
+        fragmentTransaction.replace(id, fragment);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
+    /**
      * Add bar in toolbar to open navigation drawer.
      * @param drawer
      * @param toolbar
