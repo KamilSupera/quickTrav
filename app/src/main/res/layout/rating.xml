@@ -15,7 +15,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="60">
+            android:layout_weight="130">
 
             <android.support.design.widget.FloatingActionButton
                 android:id="@+id/unlikeButton"
@@ -43,19 +43,42 @@
             android:id="@+id/rating_button"
             android:layout_width="130dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:text="@string/rating_text_view" />
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="127dp"
-            android:layout_height="21dp"
-            android:layout_weight="0"
-            android:gravity="end"
-            android:paddingLeft="30dp"
-            android:paddingRight="30dp"
-            android:text="@string/rating_text_view"
-            android:textColor="@android:color/white" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="120"
+            android:clickable="false">
+
+            <TextView
+                android:id="@+id/ratingText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="19dp"
+                android:layout_marginTop="16dp"
+                android:gravity="end"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:text="@string/rating_text_view"
+                android:textColor="@android:color/white" />
+
+            <RatingBar
+                android:id="@+id/ratingBar3"
+                android:layout_width="51dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="79dp"
+                android:layout_marginTop="0dp"
+                android:clickable="false"
+                android:focusable="false"
+                android:isIndicator="true"
+                android:numStars="5"
+                android:rating="5" />
+        </RelativeLayout>
 
     </LinearLayout>
 

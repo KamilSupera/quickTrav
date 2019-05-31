@@ -157,6 +157,13 @@ public class Route {
         throw new NoStop();
     }
 
+    public void changeRating(Float userRating) {
+         rating *= votes;
+         rating += userRating;
+         votes++;
+         rating /= votes;
+    }
+
     private void addStopAsMarker(GoogleMap googleMap, Stop stop) {
         googleMap.addMarker(new MarkerOptions()
             .position(stop.getPoint())

@@ -2,18 +2,17 @@ package com.example.supera.kamil.quicktravel.fragments;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.supera.kamil.quicktravel.R;
 import com.example.supera.kamil.quicktravel.models.Route;
@@ -29,27 +28,19 @@ public class RatingFragment extends Fragment implements View.OnClickListener{
     private String routeName;
     private FloatingActionButton likeButton;
     private FloatingActionButton unlike;
-    private Button rate;
-    private List<Route> allRoutes;
+    private AppViewModel viewModel;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.rating, container, false);
 
-        AppViewModel model = ViewModelProviders.of(Objects.requireNonNull(getActivity()))
+        viewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity()))
             .get(AppViewModel.class);
-
-        model.getRoutes().observe(this, routes -> {
-            if (routes != null) {
-                allRoutes = routes;
-            }
-        });
 
         likeButton = rootView.findViewById(R.id.likeButton);
         unlike = rootView.findViewById(R.id.unlikeButton);
-        rate = rootView.findViewById(R.id.rating_button);
-        rate.setOnClickListener(this);
+        rootView.findViewById(R.id.rating_button).setOnClickListener(this);
 
         Bundle bundle = getArguments();
 
@@ -79,6 +70,19 @@ public class RatingFragment extends Fragment implements View.OnClickListener{
             likeButton.hide();
             unlike.hide();
         }
+
+        // Make TextView with rating reactive with ViewModel obervable.
+        viewModel.getRoutes().observe(getActivity(), routes -> {
+            if (routes != null) {
+                Route route = routes.stream()
+                    .filter(routeFilter -> routeFilter.getName().equals(routeName))
+                    .collect(Collectors.toList())
+                    .get(0);
+
+                TextView ratingText = rootView.findViewById(R.id.ratingText);
+                ratingText.setText(String.format(route.getRating().toString(), "%.2f"));
+            }
+        });
 
         return rootView;
     }
@@ -112,24 +116,47 @@ public class RatingFragment extends Fragment implements View.OnClickListener{
             case R.id.unlikeButton:
                 likes.remove(routeName);
 
+                editor.commit();
+
                 if (likes.size() > 0) {
                     editor.putStringSet("likes", likes);
                 } else {
                     editor.remove("likes");
                 }
-
-                editor.commit();
                 likeButton.show();
                 unlike.hide();
 
                 break;
             case R.id.rating_button:
-                System.out.println(this.allRoutes);
-                RateDialog dialog = new RateDialog();
-                dialog.show(getActivity().getSupportFragmentManager(), "Test");
+                // If user didn't vote for this route show dialog, otherwise show toast.
+                if (!didUserVote(this.routeName)) {
+                    viewModel.setRouteName(this.routeName);
+                    RateDialog dialog = new RateDialog();
+                    dialog.show(getActivity().getSupportFragmentManager(), "Test");
+                } else {
+                    Toast.makeText(getContext(), "Już głosowałeś na tę trase", Toast.LENGTH_LONG).show();
+                }
                 break;
             default:
                 break;
+        }
+    }
+
+    /**
+     * Check if user voted for this route.
+     * @param name
+     * @return
+     */
+    private boolean didUserVote(String name) {
+        Context context = getActivity();
+        SharedPreferences preferences = context.getSharedPreferences(
+            getString(R.string.preferences_file_key), Context.MODE_PRIVATE);
+        Set<String> votes = preferences.getStringSet("votes", null);
+
+        if (votes == null) {
+            return false;
+        } else {
+            return votes.contains(routeName);
         }
     }
 }
