@@ -10,4 +10,5 @@
     <string name="header_weekend">Rozkład jazdy na weekend:</string>
     <string name="header_worker">Rozkład jazdy dla dni pracujących:</string>
     <string name="preferences_file_key">com.example.quick_travel_preferences_file</string>
+    <string name="rating_text_view">Oceń</string>
 </resources>
