@@ -68,10 +68,6 @@ public class RouteMapper extends FirebaseMapper<Route> {
      * @param route - Route object containing all information about the route.
      * @param dataSnapshot - Data from Firebase db in key reference e.g. stops or comments.
      */
-    private void comments(Route route, DataSnapshot dataSnapshot) {
-        route.setComments(new OwnerCommentMapper().mapList(dataSnapshot.getChildren()));
-    }
-
     private void stops(Route route, DataSnapshot dataSnapshot) {
         route.setStops(new StopMapper().mapList(dataSnapshot.getChildren()));
     }
@@ -82,5 +78,13 @@ public class RouteMapper extends FirebaseMapper<Route> {
 
     private void totalLength(Route route, DataSnapshot dataSnapshot) {
         route.setTotalLength(dataSnapshot.getValue().toString());
+    }
+
+    private void rating(Route route, DataSnapshot dataSnapshot) {
+        route.setRating(Float.parseFloat(dataSnapshot.getValue().toString()));
+    }
+
+    private void votes(Route route, DataSnapshot dataSnapshot) {
+        route.setVotes(Integer.parseInt(dataSnapshot.getValue().toString()));
     }
 }

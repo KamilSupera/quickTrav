@@ -7,11 +7,15 @@ import android.arch.lifecycle.ViewModel;
 import com.example.supera.kamil.quicktravel.firebase.repository.FirebaseRepository;
 import com.example.supera.kamil.quicktravel.models.Route;
 import com.example.supera.kamil.quicktravel.repository.RouteRepository;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AppViewModel extends ViewModel {
     private MutableLiveData<List<Route>> routes;
+    private String routeName;
     private RouteRepository repository = new RouteRepository();
 
     public LiveData<List<Route>> getRoutes() {
@@ -36,5 +40,51 @@ public class AppViewModel extends ViewModel {
                 routes.setValue(null);
             }
         });
+    }
+
+    public void setRouteName(String name) {
+        routeName = name;
+    }
+
+    /**
+     * Changes `rating` and `votes` properties in firebase database.
+     * This action is used inside {@link com.example.supera.kamil.quicktravel.fragments.RateDialog}
+     * fragment when user rates {@link Route}.
+     * @param userRating - Value from {@link android.widget.RatingBar}.
+     * @return Rated route name or null when no route was loaded from firebase earlier.
+     */
+    public String rate(Float userRating) {
+        Route route = getRouteByName();
+
+        if (route != null) {
+            DatabaseReference ref = FirebaseDatabase
+                .getInstance()
+                .getReference("root/routes/" + routeName);
+
+            route.changeRating(userRating);
+
+            ref.child("votes").setValue(route.getVotes());
+            ref.child("rating").setValue(route.getRating());
+
+            return routeName;
+        }
+
+        return null;
+    }
+
+    /**
+     * Get route by it's name using property `routeName` inside this class.
+     * @return String or null when any route was not found.
+     */
+    private Route getRouteByName() {
+        if (routes.getValue() != null) {
+            return routes.getValue()
+                .stream()
+                .filter(route -> route.getName().equals(routeName))
+                .collect(Collectors.toList())
+                .get(0);
+        } else {
+            return null;
+        }
     }
 }

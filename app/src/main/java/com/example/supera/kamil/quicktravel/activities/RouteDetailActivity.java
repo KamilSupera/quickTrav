@@ -20,6 +20,7 @@ import android.view.SubMenu;
 
 import com.example.supera.kamil.quicktravel.R;
 import com.example.supera.kamil.quicktravel.fragments.GoogleMapFragment;
+import com.example.supera.kamil.quicktravel.fragments.RatingFragment;
 import com.example.supera.kamil.quicktravel.utils.AppViewModelActions;
 import com.example.supera.kamil.quicktravel.utils.Utils;
 import com.example.supera.kamil.quicktravel.viewmodels.AppViewModel;
@@ -71,13 +72,18 @@ public class RouteDetailActivity extends AppCompatActivity {
             likes.forEach(likesMenu::add);
         }
 
-        FragmentManager fragmentManager = this.getSupportFragmentManager();
-        Fragment map = new GoogleMapFragment();
         Bundle bundle = new Bundle();
         bundle.putString("type", "route_detail");
         bundle.putString("route", route);
+
+        FragmentManager fragmentManager = this.getSupportFragmentManager();
+        Fragment map = new GoogleMapFragment();
         map.setArguments(bundle);
         Utils.swapFragment(fragmentManager, map);
+
+        Fragment rating = new RatingFragment();
+        rating.setArguments(bundle);
+        Utils.swapFragment(fragmentManager, rating, R.id.ratings);
     }
 
     /**

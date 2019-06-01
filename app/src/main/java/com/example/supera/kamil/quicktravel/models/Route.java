@@ -18,21 +18,15 @@ import java.util.List;
 
 
 public class Route {
-    private List<OwnerComment> comments;
     private Double maxTimeOfRide;
     private List<Stop> stops;
     private String name;
     private String totalLength;
-
-    public Route() {
-    }
+    private Float rating;
+    private int votes;
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public void setComments(List<OwnerComment> comments) {
-        this.comments = comments;
     }
 
     public void setMaxTimeOfRide(Double maxTimeOfRide) {
@@ -47,16 +41,21 @@ public class Route {
         this.totalLength = totalLength;
     }
 
+    public void setRating(Float rating) {
+        this.rating = rating;
+    }
+
+    public void setVotes(int votes) {
+        this.votes = votes;
+    }
+
+
     public String getName() {
         return name;
     }
 
     public Double getMaxTimeOfRide() {
         return maxTimeOfRide;
-    }
-
-    public List<OwnerComment> getComments() {
-        return comments;
     }
 
     public List<Stop> getStops() {
@@ -66,6 +65,16 @@ public class Route {
     public String getTotalLength() {
         return totalLength;
     }
+
+    public Float getRating() {
+        return rating;
+    }
+
+    public int getVotes() {
+        return votes;
+    }
+
+    /** END GET/SET METHODS */
 
     public void addStopsToMap(GoogleMap googleMap, String name) {
         if (this.name.contains(name) && stops != null) {
@@ -137,6 +146,13 @@ public class Route {
         }
 
         throw new NoStop();
+    }
+
+    public void changeRating(Float userRating) {
+         rating *= votes;
+         rating += userRating;
+         votes++;
+         rating /= votes;
     }
 
     private void addStopAsMarker(GoogleMap googleMap, Stop stop) {
