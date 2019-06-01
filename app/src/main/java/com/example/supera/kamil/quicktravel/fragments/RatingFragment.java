@@ -20,6 +20,7 @@ import com.example.supera.kamil.quicktravel.viewmodels.AppViewModel;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -53,23 +54,17 @@ public class RatingFragment extends Fragment implements View.OnClickListener{
             Context context = getActivity();
             SharedPreferences preferences = context.getSharedPreferences(
                 getString(R.string.preferences_file_key), Context.MODE_PRIVATE);
-            Set<String> likes = preferences.getStringSet("likes", null);
 
-            if (likes != null) {
-                List<String> exist = likes.stream().filter(like -> like.equals(routeName)).collect(Collectors.toList());
+            Map<String, ?> preferencesAll = preferences.getAll();
 
-                if (exist.size() > 0) {
-                    likeButton.hide();
-                } else {
-                    unlike.hide();
-                }
+            if (preferencesAll.containsKey(routeName)) {
+                likeButton.hide();
             } else {
                 unlike.hide();
             }
-        } else {
-            likeButton.hide();
-            unlike.hide();
         }
+
+        //List<String> exist = likes.stream().filter(like -> like.equals(routeName)).collect(Collectors.toList());
 
         // Make TextView with rating reactive with ViewModel obervable.
         viewModel.getRoutes().observe(getActivity(), routes -> {
@@ -93,38 +88,18 @@ public class RatingFragment extends Fragment implements View.OnClickListener{
         SharedPreferences preferences = context.getSharedPreferences(
             getString(R.string.preferences_file_key), Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        Set<String> likes = preferences.getStringSet("likes", null);
 
         switch (v.getId()) {
             case R.id.likeButton:
-                if (likes == null) {
-                    likes = new HashSet<>();
-                    likes.add(routeName);
-                    editor.putStringSet("likes", likes);
-                    editor.commit();
-                    likeButton.hide();
-                    unlike.show();
-                } else {
-                    likes.add(routeName);
-                    editor.putStringSet("likes", likes);
-                    editor.commit();
-                    likeButton.hide();
-                    unlike.show();
-                }
+                editor.putString(routeName, routeName);
+                editor.apply();
+                getActivity().recreate();
 
                 break;
             case R.id.unlikeButton:
-                likes.remove(routeName);
-
-                editor.commit();
-
-                if (likes.size() > 0) {
-                    editor.putStringSet("likes", likes);
-                } else {
-                    editor.remove("likes");
-                }
-                likeButton.show();
-                unlike.hide();
+                editor.remove(routeName);
+                editor.apply();
+                getActivity().recreate();
 
                 break;
             case R.id.rating_button:

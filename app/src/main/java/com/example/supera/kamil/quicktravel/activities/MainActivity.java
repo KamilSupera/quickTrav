@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -31,6 +32,7 @@ import com.example.supera.kamil.quicktravel.utils.Utils;
 import com.example.supera.kamil.quicktravel.viewmodels.AppViewModel;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.Set;
 
 
@@ -89,11 +91,17 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences preferences = context.getSharedPreferences(
             getString(R.string.preferences_file_key), Context.MODE_PRIVATE);
 
-        Set<String> likes = preferences.getStringSet("likes", null);
+        model.getRoutes().observe(this, routes -> {
+            if (routes != null) {
+                Map<String, ?> stringMap = preferences.getAll();
 
-        if (likes != null) {
-            likes.forEach(likesMenu::add);
-        }
+                routes.forEach(route1 -> {
+                    if (stringMap.containsKey(route1.getName())) {
+                        likesMenu.add(route1.getName());
+                    }
+                });
+            }
+        });
 
         AppViewModelActions.loadStopsToDrawer(this, this, model, subMenu, drawer);
         menu.add("O przewoźniku");
@@ -112,6 +120,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 200 && resultCode == RESULT_OK) {
+            this.recreate();
+        }
+    }
+
     private class MainNavigation implements NavigationView.OnNavigationItemSelectedListener {
         private Activity activity;
 
@@ -126,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
             if (!title.equals("O przewoźniku")) {
                 Intent intent = new Intent(activity, RoutesActivity.class);
                 intent.putExtra("title", title);
-                startActivity(intent);
+                startActivityForResult(intent, 200);
             } else {
                 Intent intent = new Intent(activity, AboutActivity.class);
                 startActivity(intent);
@@ -149,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
             Intent intent = new Intent(activity, RouteDetailActivity.class);
             intent.putExtra("route", menuItem.getTitle().toString());
-            startActivity(intent);
+            startActivityForResult(intent, 200);
             drawer.closeDrawer(GravityCompat.END);
 
             return true;

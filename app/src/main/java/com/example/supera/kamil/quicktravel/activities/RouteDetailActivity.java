@@ -25,6 +25,7 @@ import com.example.supera.kamil.quicktravel.utils.AppViewModelActions;
 import com.example.supera.kamil.quicktravel.utils.Utils;
 import com.example.supera.kamil.quicktravel.viewmodels.AppViewModel;
 
+import java.util.Map;
 import java.util.Set;
 
 public class RouteDetailActivity extends AppCompatActivity {
@@ -66,11 +67,17 @@ public class RouteDetailActivity extends AppCompatActivity {
         SharedPreferences preferences = context.getSharedPreferences(
             getString(R.string.preferences_file_key), Context.MODE_PRIVATE);
 
-        Set<String> likes = preferences.getStringSet("likes", null);
+        model.getRoutes().observe(this, routes -> {
+           if (routes != null) {
+               Map<String, ?> stringMap = preferences.getAll();
 
-        if (likes != null) {
-            likes.forEach(likesMenu::add);
-        }
+               routes.forEach(route1 -> {
+                   if (stringMap.containsKey(route1.getName())) {
+                       likesMenu.add(route1.getName());
+                   }
+               });
+           }
+        });
 
         Bundle bundle = new Bundle();
         bundle.putString("type", "route_detail");
@@ -93,10 +100,12 @@ public class RouteDetailActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+            super.onBackPressed();
         } else {
             super.onBackPressed();
         }
 
+        setResult(RESULT_OK);
         finish();
     }
 
