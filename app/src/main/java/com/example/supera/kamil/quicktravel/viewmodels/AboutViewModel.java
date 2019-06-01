@@ -11,36 +11,67 @@ import com.example.supera.kamil.quicktravel.repository.FirmRepository;
 import com.example.supera.kamil.quicktravel.repository.RouteRepository;
 
 import java.util.List;
+import java.util.Objects;
 
 public class AboutViewModel extends ViewModel {
     private MutableLiveData<List<Route>> routes;
-    private MutableLiveData<List<Firm>> firm;
+    private MutableLiveData<List<Firm>> firms;
 
     private RouteRepository repository = new RouteRepository();
     private FirmRepository firmRepository = new FirmRepository();
 
     public LiveData<List<Firm>> getFirm() {
-        if (firm == null) {
-            firm = new MutableLiveData<>();
+        if (firms == null) {
+            firms = new MutableLiveData<>();
             loadFirm();
         }
 
-        return firm;
+        return firms;
     }
 
     private void loadFirm() {
         firmRepository.addListener(new FirebaseRepository.FirebaseRepositoryCallback<Firm>() {
             @Override
             public void onSuccess(List<Firm> result) {
-                firm.setValue(result);
+                firms.setValue(result);
             }
 
             @Override
             public void onError(Exception e) {
                 // TODO: FIND PROPER WAY TO INFORM USER ABOUT THIS EXCEPTION.
-                firm.setValue(null);
+                firms.setValue(null);
             }
         });
+    }
+
+    public String getFirmAddress() {
+        if (getFirm().getValue() != null) {
+            Firm firm = Objects.requireNonNull(getFirm().getValue()).get(0);
+
+            return firm.getAddress();
+        } else {
+            return "";
+        }
+    }
+
+    public String getFirmName() {
+        if (getFirm().getValue() != null) {
+            Firm firm = Objects.requireNonNull(getFirm().getValue()).get(0);
+
+            return firm.getName();
+        } else {
+            return "";
+        }
+    }
+
+    public String getFirmAbout() {
+        if (getFirm().getValue() != null) {
+            Firm firm = Objects.requireNonNull(getFirm().getValue()).get(0);
+
+            return firm.getAbout();
+        } else {
+            return "";
+        }
     }
 
     public LiveData<List<Route>> getRoutes() {
