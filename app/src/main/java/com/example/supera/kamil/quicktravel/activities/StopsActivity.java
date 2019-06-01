@@ -1,5 +1,9 @@
 package com.example.supera.kamil.quicktravel.activities;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -43,6 +47,13 @@ public class StopsActivity extends AppCompatActivity {
 
         routeName = getIntent().getStringExtra("route");
         stopName = getIntent().getStringExtra("stop");
+
+        Context context = getBaseContext();
+        SharedPreferences preferences = context.getSharedPreferences(
+            getString(R.string.preferences_file_key), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("route", routeName);
+        editor.commit();
 
         ViewPager mPager = findViewById(R.id.pager);
         PagerAdapter pagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
