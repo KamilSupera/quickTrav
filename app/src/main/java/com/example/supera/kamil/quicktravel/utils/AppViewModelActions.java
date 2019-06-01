@@ -41,6 +41,7 @@ public class AppViewModelActions {
 
         model.getRoutes().observe(owner, routes -> {
             if (routes != null) {
+                subMenu.clear();
                 routes.forEach(route -> {
                     try {
                         route.addStopsToDrawer(subMenu, gps.getCityFromCurrentLocation());
@@ -65,6 +66,7 @@ public class AppViewModelActions {
                                           SubMenu subMenu, String title) {
         model.getRoutes().observe(owner, routes -> {
             if (routes != null) {
+                subMenu.clear();
                 routes.forEach(route -> {
                     if (route.checkIfRoutePossesStop(title)) {
                         subMenu.add(route.getName());
@@ -85,6 +87,7 @@ public class AppViewModelActions {
                                     SubMenu subMenu, String routeName) {
         model.getRoutes().observe(owner, routes -> {
             if (routes != null) {
+                subMenu.clear();
                 routes.stream().forEach(route -> {
                     if (route.getName().equals(routeName)) {
                         Collections.sort(route.getStops());
