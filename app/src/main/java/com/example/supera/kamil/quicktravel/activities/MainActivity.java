@@ -96,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         AppViewModelActions.loadStopsToDrawer(this, this, model, subMenu, drawer);
+        menu.add("O przewoźniku");
     }
 
 
@@ -120,9 +121,16 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            Intent intent = new Intent(activity, RoutesActivity.class);
-            intent.putExtra("title", item.getTitle().toString());
-            startActivity(intent);
+            String title = item.getTitle().toString();
+
+            if (!title.equals("O przewoźniku")) {
+                Intent intent = new Intent(activity, RouteDetailActivity.class);
+                intent.putExtra("route", title);
+                startActivity(intent);
+            } else {
+                Intent intent = new Intent(activity, AboutActivity.class);
+                startActivity(intent);
+            }
 
             drawer.closeDrawer(GravityCompat.START);
             return true;
