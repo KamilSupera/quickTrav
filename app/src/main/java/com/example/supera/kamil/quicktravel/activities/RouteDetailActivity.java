@@ -36,7 +36,14 @@ public class RouteDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.route_details);
 
-        route = getIntent().getStringExtra("route");
+        if (getIntent().getStringExtra("route") != null) {
+            route = getIntent().getStringExtra("route");
+        } else {
+            Context context = getBaseContext();
+            SharedPreferences preferences = context.getSharedPreferences(
+                getString(R.string.preferences_file_key), Context.MODE_PRIVATE);
+            route = preferences.getString("route", null);
+        }
 
         AppViewModel model = ViewModelProviders.of(this)
             .get(AppViewModel.class);
