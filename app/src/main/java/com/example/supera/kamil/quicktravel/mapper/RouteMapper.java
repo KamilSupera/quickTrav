@@ -83,8 +83,4 @@ public class RouteMapper extends FirebaseMapper<Route> {
     private void totalLength(Route route, DataSnapshot dataSnapshot) {
         route.setTotalLength(dataSnapshot.getValue().toString());
     }
-
-    private void firms(Route route, DataSnapshot dataSnapshot) {
-        route.setFirms(new FirmMapper().mapList(dataSnapshot.getChildren()));
-    }
 }

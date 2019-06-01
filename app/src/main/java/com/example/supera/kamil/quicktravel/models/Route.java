@@ -19,7 +19,6 @@ import java.util.List;
 
 public class Route {
     private List<OwnerComment> comments;
-    private List<Firm> firms;
     private Double maxTimeOfRide;
     private List<Stop> stops;
     private String name;
@@ -34,10 +33,6 @@ public class Route {
 
     public void setComments(List<OwnerComment> comments) {
         this.comments = comments;
-    }
-
-    public void setFirms(List<Firm> firms) {
-        this.firms = firms;
     }
 
     public void setMaxTimeOfRide(Double maxTimeOfRide) {
@@ -58,10 +53,6 @@ public class Route {
 
     public Double getMaxTimeOfRide() {
         return maxTimeOfRide;
-    }
-
-    public List<Firm> getFirms() {
-        return firms;
     }
 
     public List<OwnerComment> getComments() {

@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 public class Firm {
     private String name;
     private String address;
+    private String about;
 
     public Firm() {}
 
@@ -16,12 +17,20 @@ public class Firm {
         return name;
     }
 
+    public String getAbout() {
+        return about;
+    }
+
     public void setAddress(String address) {
         this.address = address;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setAbout(String about) {
+        this.about = about;
     }
 
     @NonNull
