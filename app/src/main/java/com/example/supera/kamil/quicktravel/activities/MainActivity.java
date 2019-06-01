@@ -124,8 +124,8 @@ public class MainActivity extends AppCompatActivity {
             String title = item.getTitle().toString();
 
             if (!title.equals("O przewoźniku")) {
-                Intent intent = new Intent(activity, RouteDetailActivity.class);
-                intent.putExtra("route", title);
+                Intent intent = new Intent(activity, RoutesActivity.class);
+                intent.putExtra("title", title);
                 startActivity(intent);
             } else {
                 Intent intent = new Intent(activity, AboutActivity.class);
