@@ -55,7 +55,7 @@ public class RouteDetailActivity extends AppCompatActivity {
         Menu menu = navigationView.getMenu();
         Menu likesMenu = nav2.getMenu();
         // Adding subMenu to make give user some description and make it not clickable.
-        SubMenu subMenu = menu.addSubMenu(R.string.nav_routes);
+        SubMenu subMenu = menu.addSubMenu(R.string.nav_route);
         AppViewModelActions.routeDetails(this, model, subMenu, route);
 
         Utils.rotateBar(drawer, toolbar, this);
@@ -129,7 +129,6 @@ public class RouteDetailActivity extends AppCompatActivity {
         public LikesNavigation(Activity activity) {
             this.activity = activity;
         }
-
 
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {

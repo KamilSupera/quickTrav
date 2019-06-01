@@ -4,6 +4,7 @@
     <!--Drawer menu items-->
     <string name="nav_stop">Lista przystanków</string>
     <string name="nav_routes">Trasy należące do wybranego przystanka</string>
+    <string name="nav_route">Dostępne przystanki</string>
     <string name="nav_drawer_open">Otwórz panel nawigacyjny</string>
     <string name="nav_drawer_close">Zamknij panel nawigacyjny</string>
     <string name="nav_log_out">Wyloguj</string>
