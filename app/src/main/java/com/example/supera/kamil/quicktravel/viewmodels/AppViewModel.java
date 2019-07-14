@@ -5,7 +5,9 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
 import com.example.supera.kamil.quicktravel.firebase.repository.FirebaseRepository;
+import com.example.supera.kamil.quicktravel.models.Bus;
 import com.example.supera.kamil.quicktravel.models.Route;
+import com.example.supera.kamil.quicktravel.repository.BusRepository;
 import com.example.supera.kamil.quicktravel.repository.RouteRepository;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -15,8 +17,11 @@ import java.util.stream.Collectors;
 
 public class AppViewModel extends ViewModel {
     private MutableLiveData<List<Route>> routes;
+    private MutableLiveData<List<Bus>> buses;
+
     private String routeName;
     private RouteRepository repository = new RouteRepository();
+    private BusRepository busRep = new BusRepository();
 
     public LiveData<List<Route>> getRoutes() {
         if (routes == null) {
@@ -38,6 +43,29 @@ public class AppViewModel extends ViewModel {
             public void onError(Exception e) {
                 // TODO: FIND PROPER WAY TO INFORM USER ABOUT THIS EXCEPTION.
                 routes.setValue(null);
+            }
+        });
+    }
+
+    public LiveData<List<Bus>> getBuses() {
+        if (buses == null) {
+            buses = new MutableLiveData<>();
+            loadBuses();
+        }
+
+        return buses;
+    }
+
+    private void loadBuses() {
+        busRep.addListener(new FirebaseRepository.FirebaseRepositoryCallback<Bus>() {
+            @Override
+            public void onSuccess(List<Bus> result) {
+                buses.setValue(result);
+            }
+
+            @Override
+            public void onError(Exception e) {
+                buses.setValue(null);
             }
         });
     }

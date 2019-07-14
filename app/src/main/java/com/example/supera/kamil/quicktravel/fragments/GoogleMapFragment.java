@@ -17,6 +17,7 @@ import com.example.supera.kamil.quicktravel.activities.MainActivity;
 import com.example.supera.kamil.quicktravel.activities.RoutesActivity;
 import com.example.supera.kamil.quicktravel.gps_location.DeviceDisabled;
 import com.example.supera.kamil.quicktravel.gps_location.GPSLocation;
+import com.example.supera.kamil.quicktravel.models.Bus;
 import com.example.supera.kamil.quicktravel.utils.AppViewModelActions;
 import com.example.supera.kamil.quicktravel.viewmodels.AppViewModel;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -40,6 +41,8 @@ public class GoogleMapFragment extends Fragment implements GoogleMap.OnMarkerCli
     private GoogleMap googleMap;
     private final float defZoom = 15f;
     private final String userPosition = "Twoja pozycja";
+    private final String busPosition = "Obecna pozycja busa";
+    private Marker busMarker = null;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -72,6 +75,19 @@ public class GoogleMapFragment extends Fragment implements GoogleMap.OnMarkerCli
             AppViewModelActions.mapFragmentViewModelUsage(this, model,
                 googleMap, bundle, gpsLocation);
 
+            model.getBuses().observe(this, buses -> {
+                if (buses != null) {
+                    if (busMarker == null) {
+                        busMarker = googleMap.addMarker(new MarkerOptions()
+                            .position(buses.get(0).getCurrentPosition())
+                            .title(busPosition)
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE)));
+                    } else {
+                        busMarker.setPosition(buses.get(0).getCurrentPosition());
+                    }
+                }
+            });
+
             try {
                 LatLng location = gpsLocation.getDeviceLocation();
 
@@ -94,7 +110,7 @@ public class GoogleMapFragment extends Fragment implements GoogleMap.OnMarkerCli
     public boolean onMarkerClick(Marker marker) {
         String title = marker.getTitle();
 
-        if (!title.equals(userPosition)) {
+        if (!title.equals(userPosition) && !title.equals((busPosition))) {
             if (getActivity().getClass() == MainActivity.class) {
                 Intent intent = new Intent(getActivity(), RoutesActivity.class);
                 intent.putExtra("title", title);
