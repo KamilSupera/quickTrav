@@ -73,7 +73,7 @@ public class GoogleMapFragment extends Fragment implements GoogleMap.OnMarkerCli
 
             GPSLocation gpsLocation = new GPSLocation(getContext(), getActivity());
             AppViewModelActions.mapFragmentViewModelUsage(this, model,
-                googleMap, bundle, gpsLocation);
+                googleMap, bundle, gpsLocation, getActivity());
 
             model.getBuses().observe(this, buses -> {
                 if (buses != null) {
